@@ -72,10 +72,10 @@ defmodule Mix.Tasks.Esbuild.Install do
 
       # linux
 
-      'x86_64-linux' ++ _ ->
+      'x86_64-pc-linux' ++ _ ->
         "linux-64"
 
-      'aarch64-linux' ++ _ ->
+      'aarch64-pc-linux' ++ _ ->
         "linux-arm64"
 
       # windows
