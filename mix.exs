@@ -5,8 +5,7 @@ defmodule Esbuild.MixProject do
     [
       app: :esbuild,
       version: "0.1.0",
-      elixir: "~> 1.12",
-      start_permanent: Mix.env() == :prod,
+      elixir: "~> 1.7",
       deps: deps()
     ]
   end
@@ -20,7 +19,7 @@ defmodule Esbuild.MixProject do
 
   defp deps do
     [
-      {:castore, "~> 0.1.0"}
+      {:castore, ">= 0.0.0"}
     ]
   end
 end
