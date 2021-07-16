@@ -51,9 +51,8 @@ defmodule Esbuild do
   @doc """
   Returns the version of the esbuild executable.
 
-  Returns `{:ok, version_string}` or `:error` if
-  the executable is available or the version could
-  not be fetched.
+  Returns `{:ok, version_string}` on success or `:error` when the executable
+  is not available.
   """
   def bin_version do
     path = bin_path()
