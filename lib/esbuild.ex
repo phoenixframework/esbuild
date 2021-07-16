@@ -14,7 +14,7 @@ defmodule Esbuild do
       Logger.warn("""
       esbuild version is not configured. Please set it in your config files:
 
-          config :esbuild, :version, "#{latest_version()}"
+          config :esbuild, :version, "#{latest_version()}"\
       """)
     end
 
