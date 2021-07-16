@@ -6,7 +6,8 @@ defmodule Esbuild.MixProject do
       app: :esbuild,
       version: "0.1.0",
       elixir: "~> 1.7",
-      deps: deps()
+      deps: deps(),
+      xref: xref()
     ]
   end
 
@@ -21,6 +22,12 @@ defmodule Esbuild.MixProject do
   defp deps do
     [
       {:castore, ">= 0.0.0"}
+    ]
+  end
+
+  defp xref do
+    [
+      exclude: [:httpc, :public_key]
     ]
   end
 end
