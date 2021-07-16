@@ -61,30 +61,19 @@ defmodule Mix.Tasks.Esbuild.Install do
 
   # Available targets: https://github.com/evanw/esbuild/tree/master/npm
   defp target() do
-    case :erlang.system_info(:system_architecture) do
-      # darwin
-
-      'x86_64-apple-darwin' ++ _ ->
-        "darwin-64"
-
-      'aarch64-apple-darwin' ++ _ ->
-        "darwin-arm64"
-
-      # linux
-
-      'x86_64-pc-linux' ++ _ ->
-        "linux-64"
-
-      'aarch64-pc-linux' ++ _ ->
-        "linux-arm64"
-
-      # windows
-
-      'win32' ->
+    case :os.type() do
+      {:win32, _} ->
         "windows-#{:erlang.system_info(:wordsize) * 8}"
 
-      other ->
-        Mix.raise("Could not download esbuild for architecture: #{other}")
+      {:unix, osname} ->
+        arch_str = :erlang.system_info(:system_architecture)
+        [arch | _] = arch_str |> List.to_string() |> String.split("-")
+
+        case arch do
+          "x86_64" -> "#{osname}-64"
+          "aarch64" -> "#{osname}-arm64"
+          _ -> Mix.raise("Could not download esbuild for architecture: #{arch_str}")
+        end
     end
   end
 
