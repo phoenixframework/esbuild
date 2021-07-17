@@ -41,9 +41,7 @@ defmodule Esbuild do
         """)
 
       :error ->
-        Logger.warn("""
-        esbuild is missing. Run `mix esbuild.install` to download it.\
-        """)
+        :ok
     end
 
     Supervisor.start_link([], strategy: :one_for_one)
