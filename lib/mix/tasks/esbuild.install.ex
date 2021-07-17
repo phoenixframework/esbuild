@@ -55,7 +55,7 @@ defmodule Mix.Tasks.Esbuild.Install do
     end
 
     bin_path = Esbuild.bin_path()
-    File.rename!(Path.join([tmp_dir, "package", "bin", "esbuild"]), bin_path)
+    File.cp!(Path.join([tmp_dir, "package", "bin", "esbuild"]), bin_path)
     Mix.shell().info("Installed esbuild #{version}")
   end
 
