@@ -1,11 +1,11 @@
 defmodule Esbuild do
   @moduledoc """
-  Esbuild is a installer for [esbuild](https://github.com/evanw/esbuild/).
+  Esbuild is a installer and runner for [esbuild](https://github.com/evanw/esbuild/).
 
   ## Configuration
 
   Besides the version, which is required configuration, you can also
-  configure the directory, the OS enviroment, and default arguents
+  configure the directory, the OS enviroment, and default arguments
   to `mix esbuild` and `run/1`:
 
       config :esbuild,
@@ -91,13 +91,13 @@ defmodule Esbuild do
   @doc """
   Runs the given command with `args`.
 
-  The given args will be prepended to the configured args.
+  The given args will be appended to the configured args.
   The task output will be streamed directly to stdio. It
   returns the status of the underlying call.
   """
-  def run(args) do
+  def run(extra_args) do
     config = Application.get_all_env(:esbuild)
-    extra_args = config[:args] || []
+    args = config[:args] || []
 
     opts = [
       cd: config[:cd] || File.cwd!(),

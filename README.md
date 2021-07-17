@@ -58,8 +58,8 @@ config :esbuild,
   env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
 ```
 
-When `mix esbuild` is invoked, the arguments will be prepended to the
-ones configured above.
+When `mix esbuild` is invoked, the task arguments will be appended
+to the ones configured above.
 
 ## License
 
