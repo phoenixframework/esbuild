@@ -2,9 +2,11 @@ defmodule Mix.Tasks.Esbuild do
   @moduledoc """
   Invokes esbuild with the given args.
 
-      mix esbuild assets/js/app.js --bundle --minify --target=es2016 --outfile=priv/static/assets/app.js
+      mix esbuild assets/js/app.js --bundle --minify --target=es2016 --outdir=priv/static/assets
 
-  If it is not installed, one is automatically picked.
+  If it is not installed, one is automatically installed.
+  Note the arguments given to this task will be appended
+  to any configured arguments.
   """
 
   @shortdoc "Invokes esbuild with the given args"

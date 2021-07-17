@@ -143,7 +143,7 @@ defmodule Esbuild do
     end
 
     bin_path = Esbuild.bin_path()
-    File.rename!(Path.join([tmp_dir, "package", "bin", "esbuild"]), bin_path)
+    File.cp!(Path.join([tmp_dir, "package", "bin", "esbuild"]), bin_path)
   end
 
   # Available targets: https://github.com/evanw/esbuild/tree/master/npm
