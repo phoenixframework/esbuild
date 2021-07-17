@@ -24,7 +24,8 @@ defmodule Mix.Tasks.Esbuild.Install do
         if opts[:if_missing] && File.exists?(Esbuild.bin_path()) do
           :ok
         else
-          install()
+          Mix.Task.run("app.config")
+          Esbuild.install()
         end
 
       {_, _} ->
@@ -34,78 +35,6 @@ defmodule Mix.Tasks.Esbuild.Install do
             mix escript.install
             mix escript.install --if-missing
         """)
-    end
-  end
-
-  defp install do
-    Mix.Task.run("app.config")
-
-    version = Esbuild.configured_version()
-    tmp_dir = Path.join(System.tmp_dir!(), "phx-esbuild")
-    File.rm_rf!(tmp_dir)
-    File.mkdir_p!(tmp_dir)
-
-    name = "esbuild-#{target()}"
-    url = "https://registry.npmjs.org/#{name}/-/#{name}-#{version}.tgz"
-    tar = fetch_body!(url)
-
-    case :erl_tar.extract({:binary, tar}, [:compressed, cwd: tmp_dir]) do
-      :ok -> :ok
-      other -> raise "couldn't unpack archive: #{inspect(other)}"
-    end
-
-    bin_path = Esbuild.bin_path()
-    File.rename!(Path.join([tmp_dir, "package", "bin", "esbuild"]), bin_path)
-    Mix.shell().info("Installed esbuild #{version}")
-  end
-
-  # Available targets: https://github.com/evanw/esbuild/tree/master/npm
-  defp target() do
-    case :os.type() do
-      {:win32, _} ->
-        "windows-#{:erlang.system_info(:wordsize) * 8}"
-
-      {:unix, osname} ->
-        arch_str = :erlang.system_info(:system_architecture)
-        [arch | _] = arch_str |> List.to_string() |> String.split("-")
-
-        case arch do
-          "x86_64" -> "#{osname}-64"
-          "aarch64" -> "#{osname}-arm64"
-          _ -> Mix.raise("Could not download esbuild for architecture: #{arch_str}")
-        end
-    end
-  end
-
-  defp fetch_body!(url) do
-    url = String.to_charlist(url)
-    Mix.shell().info("Downloading esbuild from #{url}")
-
-    {:ok, _} = Application.ensure_all_started(:inets)
-    {:ok, _} = Application.ensure_all_started(:ssl)
-
-    # https://erlef.github.io/security-wg/secure_coding_and_deployment_hardening/inets
-    cacertfile = CAStore.file_path() |> String.to_charlist()
-
-    http_options = [
-      ssl: [
-        verify: :verify_peer,
-        cacertfile: cacertfile,
-        depth: 2,
-        customize_hostname_check: [
-          match_fun: :public_key.pkix_verify_hostname_match_fun(:https)
-        ]
-      ]
-    ]
-
-    options = [body_format: :binary]
-
-    case :httpc.request(:get, {url, []}, http_options, options) do
-      {:ok, {{_, 200, _}, _headers, body}} ->
-        body
-
-      other ->
-        raise "couldn't fetch #{url}: #{inspect(other)}"
     end
   end
 end

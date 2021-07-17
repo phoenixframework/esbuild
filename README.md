@@ -31,7 +31,7 @@ Once installed, change your `config/config.exs` to pick your
 esbuild version of choice:
 
 ```elixir
-config :esbuild, :version, "0.12.15"
+config :esbuild, version: "0.12.15"
 ```
 
 Now you can install esbuild by running:
@@ -40,9 +40,26 @@ Now you can install esbuild by running:
 
 And invoke esbuild with:
 
-    $ mix esbuild assets/js/app.js --bundle --minify --target=es2016 --outfile=priv/static/assets/app.js
+    $ mix esbuild assets/js/app.js --bundle --minify --target=es2016 --outdir=priv/static/assets/
 
 The executable is kept at `_build/esbuild`.
+
+### Configuration
+
+Besides the version, which is required configuration, you can also
+configure the directory, the OS enviroment, and default arguents
+to the `esbuild` task:
+
+```elixir
+config :esbuild,
+  version: "0.12.15",
+  args: ~w(js/app.js --bundle --target=es2016 --outdir=../priv/static/assets),
+  cd: Path.expand("../assets", __DIR__),
+  env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+```
+
+When `mix esbuild` is invoked, the arguments will be prepended to the
+ones configured above.
 
 ## License
 

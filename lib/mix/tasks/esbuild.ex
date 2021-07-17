@@ -14,18 +14,10 @@ defmodule Mix.Tasks.Esbuild do
   @impl true
   def run(args) do
     Mix.Task.run("app.config")
-    bin_path = Esbuild.bin_path()
 
-    unless File.exists?(bin_path) do
-      Mix.Tasks.Esbuild.Install.run([])
-    end
-
-    case System.cmd(bin_path, args, into: IO.stream(), stderr_to_stdout: true) do
-      {_, 0} ->
-        :ok
-
-      {_, status} ->
-        Mix.raise("command `esbuild #{Enum.join(args, " ")}` exited with #{status}")
+    case Esbuild.install_and_run(args) do
+      0 -> :ok
+      status -> Mix.raise("`mix esbuild #{Enum.join(args, " ")}` exited with #{status}")
     end
   end
 end

@@ -5,9 +5,10 @@ defmodule Esbuild.MixProject do
     [
       app: :esbuild,
       version: "0.1.0",
-      elixir: "~> 1.7",
+      elixir: "~> 1.9",
       deps: deps(),
-      xref: xref()
+      xref: xref(),
+      aliases: [test: ["esbuild.install --if-missing", "test"]]
     ]
   end
 

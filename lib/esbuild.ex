@@ -2,7 +2,17 @@ defmodule Esbuild do
   @moduledoc """
   Esbuild is a installer for [esbuild](https://github.com/evanw/esbuild/).
 
-  See the available Mix tasks.
+  ## Configuration
+
+  Besides the version, which is required configuration, you can also
+  configure the directory, the OS enviroment, and default arguents
+  to `mix esbuild` and `run/1`:
+
+      config :esbuild,
+        version: "0.12.15",
+        args: ~w(js/app.js --bundle --target=es2016 --outdir=../priv/static/assets),
+        cd: Path.expand("../assets", __DIR__),
+        env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   """
 
   use Application
@@ -39,6 +49,19 @@ defmodule Esbuild do
     Supervisor.start_link([], strategy: :one_for_one)
   end
 
+  @doc false
+  # Latest known version at the time of publishing.
+  def latest_version do
+    "0.12.15"
+  end
+
+  @doc """
+  Returns the configured esbuild version.
+  """
+  def configured_version do
+    Application.get_env(:esbuild, :version, latest_version())
+  end
+
   @doc """
   Returns the path to the executable.
 
@@ -66,15 +89,112 @@ defmodule Esbuild do
   end
 
   @doc """
-  Returns the configured esbuild version.
+  Runs the given command with `args`.
+
+  The given args will be prepended to the configured args.
+  The task output will be streamed directly to stdio. It
+  returns the status of the underlying call.
   """
-  def configured_version do
-    Application.get_env(:esbuild, :version, latest_version())
+  def run(args) do
+    config = Application.get_all_env(:esbuild)
+    extra_args = config[:args] || []
+
+    opts = [
+      cd: config[:cd] || File.cwd!(),
+      env: config[:env] || %{},
+      into: IO.stream(:stdio, :line),
+      stderr_to_stdout: true
+    ]
+
+    bin_path()
+    |> System.cmd(args ++ extra_args, opts)
+    |> elem(1)
   end
 
-  @doc false
-  # Latest known version at the time of publishing.
-  def latest_version do
-    "0.12.15"
+  @doc """
+  Installs, if not available, and then runs `esbuild`.
+
+  Returns the same as `run/1`.
+  """
+  def install_and_run(args) do
+    bin_path = Esbuild.bin_path()
+
+    unless File.exists?(bin_path) do
+      install()
+    end
+
+    run(args)
+  end
+
+  @doc """
+  Installs esbuild with `configured_version/0`.
+  """
+  def install do
+    version = Esbuild.configured_version()
+    tmp_dir = Path.join(System.tmp_dir!(), "phx-esbuild")
+    File.rm_rf!(tmp_dir)
+    File.mkdir_p!(tmp_dir)
+
+    name = "esbuild-#{target()}"
+    url = "https://registry.npmjs.org/#{name}/-/#{name}-#{version}.tgz"
+    tar = fetch_body!(url)
+
+    case :erl_tar.extract({:binary, tar}, [:compressed, cwd: tmp_dir]) do
+      :ok -> :ok
+      other -> raise "couldn't unpack archive: #{inspect(other)}"
+    end
+
+    bin_path = Esbuild.bin_path()
+    File.rename!(Path.join([tmp_dir, "package", "bin", "esbuild"]), bin_path)
+  end
+
+  # Available targets: https://github.com/evanw/esbuild/tree/master/npm
+  defp target do
+    case :os.type() do
+      {:win32, _} ->
+        "windows-#{:erlang.system_info(:wordsize) * 8}"
+
+      {:unix, osname} ->
+        arch_str = :erlang.system_info(:system_architecture)
+        [arch | _] = arch_str |> List.to_string() |> String.split("-")
+
+        case arch do
+          "x86_64" -> "#{osname}-64"
+          "aarch64" -> "#{osname}-arm64"
+          _ -> raise "could not download esbuild for architecture: #{arch_str}"
+        end
+    end
+  end
+
+  defp fetch_body!(url) do
+    url = String.to_charlist(url)
+    Logger.debug("Downloading esbuild from #{url}")
+
+    {:ok, _} = Application.ensure_all_started(:inets)
+    {:ok, _} = Application.ensure_all_started(:ssl)
+
+    # https://erlef.github.io/security-wg/secure_coding_and_deployment_hardening/inets
+    cacertfile = CAStore.file_path() |> String.to_charlist()
+
+    http_options = [
+      ssl: [
+        verify: :verify_peer,
+        cacertfile: cacertfile,
+        depth: 2,
+        customize_hostname_check: [
+          match_fun: :public_key.pkix_verify_hostname_match_fun(:https)
+        ]
+      ]
+    ]
+
+    options = [body_format: :binary]
+
+    case :httpc.request(:get, {url, []}, http_options, options) do
+      {:ok, {{_, 200, _}, _headers, body}} ->
+        body
+
+      other ->
+        raise "couldn't fetch #{url}: #{inspect(other)}"
+    end
   end
 end
