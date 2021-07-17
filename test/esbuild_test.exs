@@ -1,9 +1,15 @@
 defmodule EsbuildTest do
   use ExUnit.Case, async: true
 
-  test "run" do
+  test "run on default" do
     assert ExUnit.CaptureIO.capture_io(fn ->
-             assert Esbuild.run(["--version"]) == 0
+             assert Esbuild.run(:default, ["--version"]) == 0
+           end) =~ "0.12.15"
+  end
+
+  test "run on context" do
+    assert ExUnit.CaptureIO.capture_io(fn ->
+             assert Esbuild.run(:another, []) == 0
            end) =~ "0.12.15"
   end
 end

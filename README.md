@@ -40,25 +40,28 @@ Now you can install esbuild by running:
 
 And invoke esbuild with:
 
-    $ mix esbuild assets/js/app.js --bundle --minify --target=es2016 --outdir=priv/static/assets/
+    $ mix esbuild default assets/js/app.js --bundle --minify --target=es2016 --outdir=priv/static/assets/
 
 The executable is kept at `_build/esbuild`.
 
-### Configuration
+### Contexts
 
-Besides the version, which is required configuration, you can also
-configure the directory, the OS enviroment, and default arguents
-to the `esbuild` task:
+The first argument to `esbuild` is the execution context.
+You can define multiple execution contexts with the current
+directory, the OS enviroment, and default arguents to the
+`esbuild` task:
 
 ```elixir
 config :esbuild,
   version: "0.12.15",
-  args: ~w(js/app.js --bundle --target=es2016 --outdir=../priv/static/assets),
-  cd: Path.expand("../assets", __DIR__),
-  env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+  default: [
+    args: ~w(js/app.js --bundle --target=es2016 --outdir=../priv/static/assets),
+    cd: Path.expand("../assets", __DIR__),
+    env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+  ]
 ```
 
-When `mix esbuild` is invoked, the task arguments will be appended
+When `mix esbuild default` is invoked, the task arguments will be appended
 to the ones configured above.
 
 ## License

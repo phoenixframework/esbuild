@@ -2,17 +2,19 @@ defmodule Esbuild do
   @moduledoc """
   Esbuild is a installer and runner for [esbuild](https://github.com/evanw/esbuild/).
 
-  ## Configuration
+  ## Contexts
 
-  Besides the version, which is required configuration, you can also
-  configure the directory, the OS enviroment, and default arguments
-  to `mix esbuild` and `run/1`:
+  You can define multiple esbuild contexts. By default, there is a
+  context called `:default` which you can configure its args, current
+  directory and environment:
 
       config :esbuild,
         version: "0.12.15",
-        args: ~w(js/app.js --bundle --target=es2016 --outdir=../priv/static/assets),
-        cd: Path.expand("../assets", __DIR__),
-        env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+        default: [
+          args: ~w(js/app.js --bundle --target=es2016 --outdir=../priv/static/assets),
+          cd: Path.expand("../assets", __DIR__),
+          env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+        ]
   """
 
   use Application
@@ -61,6 +63,25 @@ defmodule Esbuild do
   end
 
   @doc """
+  Returns the configuration for the given context.
+
+  Returns nil if the context does not exist.
+  """
+  def config_for!(context) when is_atom(context) do
+    Application.get_env(:esbuild, context) ||
+      raise ArgumentError, """
+      unknown esbuild context. Make sure the context is defined in your config files, such as:
+
+          config :esbuild,
+            #{context}: [
+              args: ~w(js/app.js --bundle --target=es2016 --outdir=../priv/static/assets),
+              cd: Path.expand("../assets", __DIR__),
+              env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+            ]
+      """
+  end
+
+  @doc """
   Returns the path to the executable.
 
   The executable may not be available if it was not yet installed.
@@ -93,8 +114,8 @@ defmodule Esbuild do
   The task output will be streamed directly to stdio. It
   returns the status of the underlying call.
   """
-  def run(extra_args) do
-    config = Application.get_all_env(:esbuild)
+  def run(context, extra_args) when is_atom(context) and is_list(extra_args) do
+    config = config_for!(context)
     args = config[:args] || []
 
     opts = [
@@ -112,16 +133,16 @@ defmodule Esbuild do
   @doc """
   Installs, if not available, and then runs `esbuild`.
 
-  Returns the same as `run/1`.
+  Returns the same as `run/2`.
   """
-  def install_and_run(args) do
+  def install_and_run(context, args) do
     bin_path = Esbuild.bin_path()
 
     unless File.exists?(bin_path) do
       install()
     end
 
-    run(args)
+    run(context, args)
   end
 
   @doc """
