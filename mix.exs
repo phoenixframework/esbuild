@@ -1,13 +1,32 @@
 defmodule Esbuild.MixProject do
   use Mix.Project
 
+  @version "0.1.0"
+  @source_url "https://github.com/phoenixframework/phoenix"
+
   def project do
     [
       app: :esbuild,
-      version: "0.1.0",
+      version: @version,
       elixir: "~> 1.9",
       deps: deps(),
-      xref: xref(),
+      description: "Mix tasks for installing and invoking esbuild",
+      package: [
+        links: %{
+          "GitHub" => @source_url,
+          "esbuild" => "https://esbuild.github.io"
+        },
+        licenses: ["MIT"]
+      ],
+      docs: [
+        main: "Esbuild",
+        source_url: @source_url,
+        source_ref: "v#{@version}",
+        extras: ["CHANGELOG.md"]
+      ],
+      xref: [
+        exclude: [:httpc, :public_key]
+      ],
       aliases: [test: ["esbuild.install --if-missing", "test"]]
     ]
   end
@@ -23,13 +42,8 @@ defmodule Esbuild.MixProject do
 
   defp deps do
     [
-      {:castore, ">= 0.0.0"}
-    ]
-  end
-
-  defp xref do
-    [
-      exclude: [:httpc, :public_key]
+      {:castore, ">= 0.0.0"},
+      {:ex_doc, ">= 0.0.0", only: :docs}
     ]
   end
 end

@@ -36,11 +36,15 @@ config :esbuild, version: "0.12.15"
 
 Now you can install esbuild by running:
 
-    $ mix esbuild.install
+```bash
+$ mix esbuild.install
+```
 
 And invoke esbuild with:
 
-    $ mix esbuild default assets/js/app.js --bundle --minify --target=es2016 --outdir=priv/static/assets/
+```bash
+$ mix esbuild default assets/js/app.js --bundle --minify --target=es2016 --outdir=priv/static/assets/
+```
 
 The executable is kept at `_build/esbuild`.
 
@@ -66,6 +70,6 @@ to the ones configured above.
 
 ## License
 
-Copyright (c) 2021, Wojtek Mach, José Valim.
+Copyright (c) 2021 Wojtek Mach, José Valim.
 
 esbuild source code is licensed under the [MIT License](LICENSE.md).

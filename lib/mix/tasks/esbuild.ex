@@ -4,13 +4,17 @@ defmodule Mix.Tasks.Esbuild do
 
   Usage:
 
-      mix esbuild CONTEXT ARGS
+  ```bash
+  $ mix esbuild CONTEXT ARGS
+  ```
 
   Example:
 
-      mix esbuild default assets/js/app.js --bundle --minify --target=es2016 --outdir=priv/static/assets
+  ```bash
+  $ mix esbuild default assets/js/app.js --bundle --minify --target=es2016 --outdir=priv/static/assets
+  ```
 
-  If esbuild is not installed, one is automatically installed.
+  If esbuild is not installed, it is automatically downloaded.
   Note the arguments given to this task will be appended
   to any configured arguments.
   """
