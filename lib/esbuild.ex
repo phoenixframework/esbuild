@@ -180,6 +180,8 @@ defmodule Esbuild do
         case arch do
           "x86_64" -> "#{osname}-64"
           "aarch64" -> "#{osname}-arm64"
+          # TODO: remove when we require OTP 24
+          "arm" when osname == :darwin -> "darwin-arm64"
           _ -> raise "could not download esbuild for architecture: #{arch_str}"
         end
     end
