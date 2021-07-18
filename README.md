@@ -54,7 +54,7 @@ The executable is kept at `_build/esbuild`.
 
 The first argument to `esbuild` is the execution profile.
 You can define multiple execution profiles with the current
-directory, the OS enviroment, and default arguents to the
+directory, the OS enviroment, and default arguments to the
 `esbuild` task:
 
 ```elixir
