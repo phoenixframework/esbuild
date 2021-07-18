@@ -3,8 +3,8 @@ defmodule Mix.Tasks.Esbuild.Install do
   Installs esbuild under `_build`.
 
   ```bash
-  $ mix escript.install
-  $ mix escript.install --if-missing
+  $ mix esbuild.install
+  $ mix esbuild.install --if-missing
   ```
 
   By default, it installs #{Esbuild.latest_version()} but you
@@ -35,10 +35,10 @@ defmodule Mix.Tasks.Esbuild.Install do
 
       {_, _} ->
         Mix.raise("""
-        Invalid arguments to escript.install, expected one of:
+        Invalid arguments to esbuild.install, expected one of:
 
-            mix escript.install
-            mix escript.install --if-missing
+            mix esbuild.install
+            mix esbuild.install --if-missing
         """)
     end
   end
