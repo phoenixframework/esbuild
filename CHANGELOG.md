@@ -3,6 +3,7 @@
 ## v0.1.2 (2021-07-18)
 
   * Improve docs and error messages
+  * Reenable esbuild task
 
 ## v0.1.1 (2021-07-18)
 
