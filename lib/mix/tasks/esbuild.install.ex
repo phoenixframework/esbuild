@@ -1,9 +1,11 @@
 defmodule Mix.Tasks.Esbuild.Install do
   @moduledoc """
-  Installs esbuild under _build.
+  Installs esbuild under `_build`.
 
-      mix escript.install
-      mix escript.install --if-missing
+  ```bash
+  $ mix escript.install
+  $ mix escript.install --if-missing
+  ```
 
   By default, it installs #{Esbuild.latest_version()} but you
   can configure it in your config files, such as:
