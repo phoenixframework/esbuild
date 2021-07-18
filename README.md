@@ -1,5 +1,7 @@
 # Esbuild
 
+[![CI](https://github.com/phoenixframework/esbuild/actions/workflows/main.yml/badge.svg)](https://github.com/phoenixframework/esbuild/actions/workflows/main.yml)
+
 Mix tasks for installing and invoking [esbuild](https://github.com/evanw/esbuild/).
 
 ## Installation
