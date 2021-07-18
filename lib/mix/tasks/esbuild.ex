@@ -33,6 +33,8 @@ defmodule Mix.Tasks.Esbuild do
       0 -> :ok
       status -> Mix.raise("`mix esbuild #{Enum.join(all, " ")}` exited with #{status}")
     end
+
+    Mix.Task.reenable("esbuild")
   end
 
   def run([]) do
