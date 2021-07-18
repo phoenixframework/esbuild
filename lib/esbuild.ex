@@ -2,10 +2,10 @@ defmodule Esbuild do
   @moduledoc """
   Esbuild is a installer and runner for [esbuild](https://github.com/evanw/esbuild/).
 
-  ## Contexts
+  ## Profiles
 
-  You can define multiple esbuild contexts. By default, there is a
-  context called `:default` which you can configure its args, current
+  You can define multiple esbuild profiles. By default, there is a
+  profile called `:default` which you can configure its args, current
   directory and environment:
 
       config :esbuild,
@@ -63,17 +63,17 @@ defmodule Esbuild do
   end
 
   @doc """
-  Returns the configuration for the given context.
+  Returns the configuration for the given profile.
 
-  Returns nil if the context does not exist.
+  Returns nil if the profile does not exist.
   """
-  def config_for!(context) when is_atom(context) do
-    Application.get_env(:esbuild, context) ||
+  def config_for!(profile) when is_atom(profile) do
+    Application.get_env(:esbuild, profile) ||
       raise ArgumentError, """
-      unknown esbuild context. Make sure the context is defined in your config files, such as:
+      unknown esbuild profile. Make sure the profile is defined in your config files, such as:
 
           config :esbuild,
-            #{context}: [
+            #{profile}: [
               args: ~w(js/app.js --bundle --target=es2016 --outdir=../priv/static/assets),
               cd: Path.expand("../assets", __DIR__),
               env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
@@ -114,8 +114,8 @@ defmodule Esbuild do
   The task output will be streamed directly to stdio. It
   returns the status of the underlying call.
   """
-  def run(context, extra_args) when is_atom(context) and is_list(extra_args) do
-    config = config_for!(context)
+  def run(profile, extra_args) when is_atom(profile) and is_list(extra_args) do
+    config = config_for!(profile)
     args = config[:args] || []
 
     opts = [
@@ -135,14 +135,14 @@ defmodule Esbuild do
 
   Returns the same as `run/2`.
   """
-  def install_and_run(context, args) do
+  def install_and_run(profile, args) do
     bin_path = Esbuild.bin_path()
 
     unless File.exists?(bin_path) do
       install()
     end
 
-    run(context, args)
+    run(profile, args)
   end
 
   @doc """

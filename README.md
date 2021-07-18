@@ -50,10 +50,10 @@ $ mix esbuild default assets/js/app.js --bundle --minify --target=es2016 --outdi
 
 The executable is kept at `_build/esbuild`.
 
-### Contexts
+### Profiles
 
-The first argument to `esbuild` is the execution context.
-You can define multiple execution contexts with the current
+The first argument to `esbuild` is the execution profile.
+You can define multiple execution profiles with the current
 directory, the OS enviroment, and default arguents to the
 `esbuild` task:
 

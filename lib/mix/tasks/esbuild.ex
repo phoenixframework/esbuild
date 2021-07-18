@@ -19,23 +19,23 @@ defmodule Mix.Tasks.Esbuild do
   to any configured arguments.
   """
 
-  @shortdoc "Invokes esbuild with the context and args"
+  @shortdoc "Invokes esbuild with the profile and args"
 
   use Mix.Task
 
   @impl true
-  def run([context | args] = all) do
+  def run([profile | args] = all) do
     if Code.ensure_loaded?(Mix.Tasks.App.Config) do
       Mix.Task.run("app.config")
     end
 
-    case Esbuild.install_and_run(String.to_atom(context), args) do
+    case Esbuild.install_and_run(String.to_atom(profile), args) do
       0 -> :ok
       status -> Mix.raise("`mix esbuild #{Enum.join(all, " ")}` exited with #{status}")
     end
   end
 
   def run([]) do
-    Mix.raise("`mix esbuild` expects the context as argument")
+    Mix.raise("`mix esbuild` expects the profile as argument")
   end
 end
