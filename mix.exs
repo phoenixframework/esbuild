@@ -2,7 +2,7 @@ defmodule Esbuild.MixProject do
   use Mix.Project
 
   @version "0.1.1"
-  @source_url "https://github.com/phoenixframework/phoenix"
+  @source_url "https://github.com/phoenixframework/esbuild"
 
   def project do
     [
