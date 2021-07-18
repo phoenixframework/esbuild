@@ -26,7 +26,10 @@ defmodule Mix.Tasks.Esbuild.Install do
         if opts[:if_missing] && File.exists?(Esbuild.bin_path()) do
           :ok
         else
-          Mix.Task.run("app.config")
+          if Code.ensure_loaded?(Mix.Tasks.App.Config) do
+            Mix.Task.run("app.config")
+          end
+
           Esbuild.install()
         end
 

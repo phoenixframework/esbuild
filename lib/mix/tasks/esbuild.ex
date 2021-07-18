@@ -25,7 +25,9 @@ defmodule Mix.Tasks.Esbuild do
 
   @impl true
   def run([context | args] = all) do
-    Mix.Task.run("app.config")
+    if Code.ensure_loaded?(Mix.Tasks.App.Config) do
+      Mix.Task.run("app.config")
+    end
 
     case Esbuild.install_and_run(String.to_atom(context), args) do
       0 -> :ok
