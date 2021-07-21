@@ -164,9 +164,11 @@ defmodule Esbuild do
     end
 
     bin_path = Esbuild.bin_path()
+
     case :os.type() do
       {:win32, _} ->
         File.cp!(Path.join([tmp_dir, "package", "esbuild.exe"]), bin_path)
+
       _ ->
         File.cp!(Path.join([tmp_dir, "package", "bin", "esbuild"]), bin_path)
     end
