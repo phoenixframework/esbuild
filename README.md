@@ -50,12 +50,41 @@ $ mix esbuild default assets/js/app.js --bundle --minify --target=es2016 --outdi
 
 The executable is kept at `_build/esbuild`.
 
-### Profiles
+## Profiles
 
 The first argument to `esbuild` is the execution profile.
 You can define multiple execution profiles with the current
 directory, the OS enviroment, and default arguments to the
 `esbuild` task:
+
+```elixir
+config :esbuild,
+  version: "0.12.15",
+  default: [
+    args: ~w(js/app.js),
+    cd: Path.expand("../assets", __DIR__)
+  ]
+```
+
+When `mix esbuild default` is invoked, the task arguments will be appended
+to the ones configured above.
+
+## Adding to Phoenix
+
+To add `esbuild` to an application using Phoenix, you need only four steps.
+
+First add it as a dependency in your `mix.exs`:
+
+```elixir
+def deps do
+  [
+    {:esbuild, "~> 0.1", runtime: Mix.env() == :dev}
+  ]
+end
+```
+
+Now let's configure `esbuild` to use `assets/js/app.js` as an entry point and
+write to `priv/static/assets`:
 
 ```elixir
 config :esbuild,
@@ -67,8 +96,24 @@ config :esbuild,
   ]
 ```
 
-When `mix esbuild default` is invoked, the task arguments will be appended
-to the ones configured above.
+> Make sure the "assets" directory from priv/static is listed in the
+> :only option for Plug.Static in your lib/my_app_web/endpoint.ex
+
+For development, we want to enable watch mode. So find the `watchers`
+configuration in your `config/dev.exs` and add:
+
+```elixir
+  esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
+```
+
+Note we are inlining source maps and enabling the file system watcher.
+
+Finally, back in your `mix.exs`, make sure you have a `assets.deploy`
+alias for deployments, which will also use the `--minify` option:
+
+```elixir
+"assets.deploy": ["esbuild default --minify", "phx.digest"]
+```
 
 ## License
 
