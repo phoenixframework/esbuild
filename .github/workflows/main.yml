@@ -14,8 +14,8 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: '1.9'
-              otp: 20
+              elixir: '1.10'
+              otp: 21
           - pair:
               elixir: '1.12'
               otp: 24
@@ -30,12 +30,8 @@ jobs:
 
       - uses: actions/cache@v2
         with:
-          path: |
-            deps
-            _build
-          key: ${{ runner.os }}-mix-${{matrix.pair.elixir}}-${{matrix.pair.otp}}-${{ hashFiles('**/mix.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-mix-
+          path: deps
+          key: ${{ runner.os }}-mix-${{matrix.pair.elixir}}-${{matrix.pair.otp}}-${{ hashFiles('**/mix.lock') }}-v1
 
       - run: mix deps.get
 
