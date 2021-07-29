@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.2.0 (2021-07-29)
+
+  * Bump to esbuild 0.12.17
+
 ## v0.1.3 (2021-07-21)
 
   * Fix Windows support

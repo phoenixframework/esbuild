@@ -9,7 +9,7 @@ defmodule Esbuild do
   directory and environment:
 
       config :esbuild,
-        version: "0.12.15",
+        version: "0.12.17",
         default: [
           args: ~w(js/app.js --bundle --target=es2016 --outdir=../priv/static/assets),
           cd: Path.expand("../assets", __DIR__),
@@ -52,7 +52,7 @@ defmodule Esbuild do
   @doc false
   # Latest known version at the time of publishing.
   def latest_version do
-    "0.12.15"
+    "0.12.17"
   end
 
   @doc """
