@@ -71,13 +71,14 @@ to the ones configured above.
 
 ## Adding to Phoenix
 
-To add `esbuild` to an application using Phoenix, you need only four steps.
+To add `esbuild` to an application using Phoenix, you need only four steps.  Installation requires that Phoenix watchers can accept module-function-args tuples which is not built into Phoenix 1.5.9.
 
 First add it as a dependency in your `mix.exs`:
 
 ```elixir
 def deps do
   [
+    {:phoenix, github: "phoenixframework/phoenix", branch: "v1.5", override: true},
     {:esbuild, "~> 0.1", runtime: Mix.env() == :dev}
   ]
 end
