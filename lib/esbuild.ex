@@ -81,7 +81,7 @@ defmodule Esbuild do
       """
   end
 
-  @bin_path Path.join(Path.dirname(Mix.Project.build_path()), "esbuild")
+  @build_path Mix.Project.build_path()
 
   @doc """
   Returns the path to the executable.
@@ -89,7 +89,16 @@ defmodule Esbuild do
   The executable may not be available if it was not yet installed.
   """
   def bin_path do
-    @bin_path
+    # First try compile-time path for Mix.install and releases, where the user may not have Mix.
+    # If that path doesn't exist it means the user relocated the release so we fallback to Mix.
+    build_path =
+      if File.exists?(@build_path) do
+        @build_path
+      else
+        Mix.Project.build_path()
+      end
+
+    Path.join(Path.dirname(build_path), "esbuild")
   end
 
   @doc """
