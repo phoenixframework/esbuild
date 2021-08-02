@@ -13,7 +13,7 @@ in dev:
 ```elixir
 def deps do
   [
-    {:esbuild, "~> 0.1", runtime: Mix.env() == :dev}
+    {:esbuild, "~> 0.2", runtime: Mix.env() == :dev}
   ]
 end
 ```
@@ -24,7 +24,7 @@ then it only needs to be a dev dependency:
 ```elixir
 def deps do
   [
-    {:esbuild, "~> 0.1", only: :dev}
+    {:esbuild, "~> 0.2", only: :dev}
   ]
 end
 ```
@@ -79,7 +79,7 @@ First add it as a dependency in your `mix.exs`:
 def deps do
   [
     {:phoenix, github: "phoenixframework/phoenix", branch: "v1.5", override: true},
-    {:esbuild, "~> 0.1", runtime: Mix.env() == :dev}
+    {:esbuild, "~> 0.2", runtime: Mix.env() == :dev}
   ]
 end
 ```
