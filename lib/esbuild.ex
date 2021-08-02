@@ -164,6 +164,7 @@ defmodule Esbuild do
     end
 
     bin_path = Esbuild.bin_path()
+    File.mkdir_p!(Path.dirname(bin_path))
 
     case :os.type() do
       {:win32, _} ->
