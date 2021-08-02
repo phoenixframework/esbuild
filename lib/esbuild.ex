@@ -81,13 +81,15 @@ defmodule Esbuild do
       """
   end
 
+  @bin_path Path.join(Path.dirname(Mix.Project.build_path()), "esbuild")
+
   @doc """
   Returns the path to the executable.
 
   The executable may not be available if it was not yet installed.
   """
   def bin_path do
-    Path.join(Path.dirname(Mix.Project.build_path()), "esbuild")
+    @bin_path
   end
 
   @doc """
