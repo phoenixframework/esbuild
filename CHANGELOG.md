@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v0.2.1 (2021-08-09)
+
+  * Require Elixi v1.10
+  * Make sure `bin_path` directory exists before writing to it
+  * Fix target detection for FreeBSD
+
 ## v0.2.0 (2021-07-29)
 
   * Bump to esbuild 0.12.17
