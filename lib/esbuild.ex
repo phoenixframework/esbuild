@@ -186,6 +186,7 @@ defmodule Esbuild do
         [arch | _] = arch_str |> List.to_string() |> String.split("-")
 
         case arch do
+          "amd64" -> "#{osname}-64"
           "x86_64" -> "#{osname}-64"
           "aarch64" -> "#{osname}-arm64"
           # TODO: remove when we require OTP 24
