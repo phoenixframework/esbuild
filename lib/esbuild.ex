@@ -15,6 +15,26 @@ defmodule Esbuild do
           cd: Path.expand("../assets", __DIR__),
           env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
         ]
+
+  ## `args` or `script`
+
+  By default, esbuild is called via its command-line interface.
+  You configure the command-line options via the `args` key.
+
+  If you need more complex configuration, replace `args` with `script`.
+
+      config :esbuild,
+        version: "0.12.17",
+        default: [
+          script: "./esbuild-script.js",
+          cd: Path.expand("../assets", __DIR__),
+          env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+        ]
+
+  `:script` should be the name of a [Javascript build script](https://esbuild.github.io/api/#build-api).
+
+  This is the case if you need to use any esbuild plugins as there are no plans
+  to support plugin config va the esbuild CLI.
   """
 
   use Application
@@ -108,16 +128,39 @@ defmodule Esbuild do
   end
 
   @doc """
-  Runs the given command with `args`.
+  Runs esbuild with the profile's `args` or with the supplied `config`.
 
-  The given args will be appended to the configured args.
+  When `args` are given, any extra args will be appended, when `config` is
+  supplied, the extra args are *ignored*.
+
   The task output will be streamed directly to stdio. It
   returns the status of the underlying call.
   """
   def run(profile, extra_args) when is_atom(profile) and is_list(extra_args) do
     config = config_for!(profile)
-    args = config[:args] || []
 
+    if Keyword.has_key?(config, :script) do
+      run_script(config)
+    else
+      args = config[:args] || []
+      run_args(Keyword.put(config, :args, args ++ extra_args))
+    end
+  end
+
+  defp run_script(config) do
+    script = config[:script]
+    opts = [
+      cd: config[:cd] || File.cwd!(),
+      env: config[:env] || %{},
+      into: IO.stream(:stdio, :line),
+      stderr_to_stdout: true
+    ]
+
+    System.cmd("node", [script], opts)
+    |> elem(1)
+  end
+
+  defp run_args(config) do
     opts = [
       cd: config[:cd] || File.cwd!(),
       env: config[:env] || %{},
@@ -126,7 +169,7 @@ defmodule Esbuild do
     ]
 
     bin_path()
-    |> System.cmd(args ++ extra_args, opts)
+    |> System.cmd(config[:args], opts)
     |> elem(1)
   end
 
