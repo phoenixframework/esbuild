@@ -158,7 +158,7 @@ defmodule Esbuild do
     url = "https://registry.npmjs.org/#{name}/-/#{name}-#{version}.tgz"
     tar = fetch_body!(url)
 
-    case :erl_tar.extract({:binary, tar}, [:compressed, cwd: tmp_dir]) do
+    case :erl_tar.extract({:binary, tar}, [:compressed, cwd: to_charlist(tmp_dir)]) do
       :ok -> :ok
       other -> raise "couldn't unpack archive: #{inspect(other)}"
     end
