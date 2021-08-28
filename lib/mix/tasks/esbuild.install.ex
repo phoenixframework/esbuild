@@ -23,7 +23,7 @@ defmodule Mix.Tasks.Esbuild.Install do
   def run(args) do
     case OptionParser.parse_head!(args, strict: [if_missing: :boolean]) do
       {opts, []} ->
-        if opts[:if_missing] && File.exists?(Esbuild.bin_path()) do
+        if opts[:if_missing] && latest_version?() do
           :ok
         else
           if Code.ensure_loaded?(Mix.Tasks.App.Config) do
@@ -41,5 +41,10 @@ defmodule Mix.Tasks.Esbuild.Install do
             mix esbuild.install --if-missing
         """)
     end
+  end
+
+  defp latest_version?() do
+    version = Esbuild.configured_version()
+    match?({:ok, ^version}, Esbuild.bin_version())
   end
 end
