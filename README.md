@@ -116,6 +116,45 @@ alias for deployments, which will also use the `--minify` option:
 "assets.deploy": ["esbuild default --minify", "phx.digest"]
 ```
 
+## Third-party JS packages
+
+If you have JavaScript dependencies, you have two options
+to add them to your application:
+
+  1. Vendor those dependencies inside your project and
+     import them in your "assets/js/app.js" using a relative
+     path:
+
+        import topbar from "../vendor/topbar"
+
+  2. Call `npm install topbar --save` inside your assets
+     directory and `esbuild` will be able to automatically
+     pick them up:
+
+        import topbar from "topbar"     
+
+## CSS
+
+`esbuild` has basic support for CSS. If you import a css file at the
+top of your main `.js` file, `esbuild` will also bundle it, and write
+it to the same directory as your `app.js`:
+
+```js
+import "../css/app.css"
+```
+
+However, if you want to use a CSS framework, such as SASS or Tailwind,
+you will need to use a separate tool. Here are some options to do so:
+
+  * You can use `esbuild` plugins (requires `npm`). See [Phoenix' official
+    guide on using them](https://hexdocs.pm/phoenix/1.6.0-rc.0/asset_management.html).
+
+  * If you want SASS, you can bring [standalone SASS](https://github.com/CargoSense/dart_sass)
+    to your project, without a need for external dependencies (similar to esbuild).
+
+  * You can bring `Node` + `npm` to your application and install any package
+    you want. See [this pull request on how to add Alpine + Tailwind](https://github.com/josevalim/phx_esbuild_demo/pull/3).
+
 ## License
 
 Copyright (c) 2021 Wojtek Mach, José Valim.
