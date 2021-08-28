@@ -1,8 +1,12 @@
 # CHANGELOG
 
+## v0.2.2 (2021-08-28)
+
+  * `mix esbuild.install --if-missing` also checks version
+
 ## v0.2.1 (2021-08-09)
 
-  * Require Elixi v1.10
+  * Require Elixir v1.10
   * Make sure `bin_path` directory exists before writing to it
   * Fix target detection for FreeBSD
 
