@@ -136,9 +136,7 @@ defmodule Esbuild do
   Returns the same as `run/2`.
   """
   def install_and_run(profile, args) do
-    bin_path = Esbuild.bin_path()
-
-    unless File.exists?(bin_path) do
+    unless File.exists?(bin_path()) do
       install()
     end
 
@@ -149,7 +147,7 @@ defmodule Esbuild do
   Installs esbuild with `configured_version/0`.
   """
   def install do
-    version = Esbuild.configured_version()
+    version = configured_version()
     tmp_dir = Path.join(System.tmp_dir!(), "phx-esbuild")
     File.rm_rf!(tmp_dir)
     File.mkdir_p!(tmp_dir)
@@ -163,7 +161,7 @@ defmodule Esbuild do
       other -> raise "couldn't unpack archive: #{inspect(other)}"
     end
 
-    bin_path = Esbuild.bin_path()
+    bin_path = bin_path()
     File.mkdir_p!(Path.dirname(bin_path))
 
     case :os.type() do
