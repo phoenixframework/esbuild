@@ -125,13 +125,13 @@ to add them to your application:
      import them in your "assets/js/app.js" using a relative
      path:
 
-        import topbar from "../vendor/topbar"
+         import topbar from "../vendor/topbar"
 
   2. Call `npm install topbar --save` inside your assets
      directory and `esbuild` will be able to automatically
      pick them up:
 
-        import topbar from "topbar"     
+         import topbar from "topbar"     
 
 ## CSS
 
