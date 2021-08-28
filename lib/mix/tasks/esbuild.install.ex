@@ -12,8 +12,8 @@ defmodule Mix.Tasks.Esbuild.Install do
 
       config :esbuild, :version, "#{Esbuild.latest_version()}"
 
-  You can pass the `--if-missing` flag to only install it if
-  one does not yet exist.
+  You can pass the `--if-missing` flag to only install if
+  one does not yet exist or if the version configured is newer.
   """
 
   @shortdoc "Installs esbuild under _build"
@@ -23,7 +23,8 @@ defmodule Mix.Tasks.Esbuild.Install do
   def run(args) do
     case OptionParser.parse_head!(args, strict: [if_missing: :boolean]) do
       {opts, []} ->
-        if opts[:if_missing] && File.exists?(Esbuild.bin_path()) do
+        if opts[:if_missing] && File.exists?(Esbuild.bin_path()) &&
+             latest_configured_version_installed?() do
           :ok
         else
           if Code.ensure_loaded?(Mix.Tasks.App.Config) do
@@ -41,5 +42,13 @@ defmodule Mix.Tasks.Esbuild.Install do
             mix esbuild.install --if-missing
         """)
     end
+  end
+
+  defp latest_configured_version_installed?() do
+    {:ok, version_installed} = Esbuild.bin_version()
+    # Fallback to version_installed if no config found
+    version_to_compare = Application.get_env(:esbuild, :version, version_installed)
+
+    version_installed === version_to_compare
   end
 end
