@@ -21,15 +21,15 @@ defmodule EsbuildTest do
     Mix.Task.rerun("esbuild.install", ["--if-missing"])
 
     assert ExUnit.CaptureIO.capture_io(fn ->
-      assert Esbuild.run(:default, ["--version"]) == 0
-    end) =~ "0.12.15"
+             assert Esbuild.run(:default, ["--version"]) == 0
+           end) =~ "0.12.15"
 
     Application.delete_env(:esbuild, :version)
 
     Mix.Task.rerun("esbuild.install", ["--if-missing"])
 
     assert ExUnit.CaptureIO.capture_io(fn ->
-      assert Esbuild.run(:default, ["--version"]) == 0
-    end) =~ @version
+             assert Esbuild.run(:default, ["--version"]) == 0
+           end) =~ @version
   end
 end

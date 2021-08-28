@@ -13,7 +13,7 @@ defmodule Mix.Tasks.Esbuild.Install do
       config :esbuild, :version, "#{Esbuild.latest_version()}"
 
   You can pass the `--if-missing` flag to only install it if
-  one does not yet exist.
+  one does not yet exist at the given version.
   """
 
   @shortdoc "Installs esbuild under _build"
