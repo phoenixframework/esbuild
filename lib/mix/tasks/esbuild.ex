@@ -11,12 +11,19 @@ defmodule Mix.Tasks.Esbuild do
   Example:
 
   ```bash
-  $ mix esbuild --no-runtime-config default assets/js/app.js --bundle --minify --target=es2016 --outdir=priv/static/assets
+  $ mix esbuild default assets/js/app.js --bundle --minify --target=es2016 --outdir=priv/static/assets
   ```
 
   If esbuild is not installed, it is automatically downloaded.
   Note the arguments given to this task will be appended
   to any configured arguments.
+
+  Flags to control this Mix task must be given before the
+  profile:
+  
+  ```bash
+  $ mix esbuild --no-runtime-config default assets/js/app.js
+  ```
   """
 
   @shortdoc "Invokes esbuild with the profile and args"
