@@ -5,7 +5,7 @@ defmodule Mix.Tasks.Esbuild do
   Usage:
 
   ```bash
-  $ mix esbuild TASK_OPTIONS CONTEXT ARGS
+  $ mix esbuild TASK_OPTIONS PROFILE ESBUILD_ARGS
   ```
 
   Example:
@@ -32,10 +32,10 @@ defmodule Mix.Tasks.Esbuild do
 
   @impl true
   def run(args) do
-    options = [switches: [no_runtime_config: :boolean]]
-    {parsed, remaining_args, _errors} = OptionParser.parse_head(args, options)
+    switches = [runtime_config: :boolean]
+    {opts, remaining_args} = OptionParser.parse_head!(args, switches: switches)
 
-    if !parsed[:no_runtime_config] && Code.ensure_loaded?(Mix.Tasks.App.Config) do
+    if Keyword.get(opts, :runtime_config, true) and Code.ensure_loaded?(Mix.Tasks.App.Config) do
       Mix.Task.run("app.config")
     end
 
