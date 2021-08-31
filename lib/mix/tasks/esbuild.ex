@@ -20,7 +20,7 @@ defmodule Mix.Tasks.Esbuild do
 
   Flags to control this Mix task must be given before the
   profile:
-  
+
   ```bash
   $ mix esbuild --no-runtime-config default assets/js/app.js
   ```
@@ -39,6 +39,7 @@ defmodule Mix.Tasks.Esbuild do
       Mix.Task.run("app.config")
     end
 
+    Mix.Task.reenable("esbuild")
     install_and_run(remaining_args)
   end
 
@@ -47,8 +48,6 @@ defmodule Mix.Tasks.Esbuild do
       0 -> :ok
       status -> Mix.raise("`mix esbuild #{Enum.join(all, " ")}` exited with #{status}")
     end
-
-    Mix.Task.reenable("esbuild")
   end
 
   defp install_and_run([]) do
