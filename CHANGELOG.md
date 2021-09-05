@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v0.3.0 (2021-09-05)
+
+  * No longer load `config/runtime.exs` by default, instead support `--runtime-config` flag
+  * Update initial `esbuild` version to `0.12.18`
+
 ## v0.2.2 (2021-08-28)
 
   * `mix esbuild.install --if-missing` also checks version
