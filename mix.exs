@@ -27,7 +27,7 @@ defmodule Esbuild.MixProject do
       xref: [
         exclude: [:httpc, :public_key]
       ],
-      aliases: [test: ["esbuild.install --if-missing", "test --no-start"]]
+      aliases: [test: ["esbuild.install --if-missing", "test"]]
     ]
   end
 
