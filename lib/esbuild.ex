@@ -52,7 +52,7 @@ defmodule Esbuild do
   @doc false
   # Latest known version at the time of publishing.
   def latest_version do
-    "0.12.17"
+    "0.12.18"
   end
 
   @doc """
@@ -70,7 +70,7 @@ defmodule Esbuild do
   def config_for!(profile) when is_atom(profile) do
     Application.get_env(:esbuild, profile) ||
       raise ArgumentError, """
-      unknown esbuild profile. Make sure the profile is defined in your config files, such as:
+      unknown esbuild profile. Make sure the profile is defined in your config/config.exs file, such as:
 
           config :esbuild,
             #{profile}: [

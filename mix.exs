@@ -1,7 +1,7 @@
 defmodule Esbuild.MixProject do
   use Mix.Project
 
-  @version "0.2.2"
+  @version "0.3.0"
   @source_url "https://github.com/phoenixframework/esbuild"
 
   def project do
@@ -27,7 +27,7 @@ defmodule Esbuild.MixProject do
       xref: [
         exclude: [:httpc, :public_key]
       ],
-      aliases: [test: ["esbuild.install --if-missing", "test"]]
+      aliases: [test: ["esbuild.install --if-missing", "test --no-start"]]
     ]
   end
 

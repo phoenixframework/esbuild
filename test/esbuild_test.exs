@@ -1,7 +1,7 @@
 defmodule EsbuildTest do
   use ExUnit.Case, async: true
 
-  @version "0.12.17"
+  @version Esbuild.latest_version()
 
   test "run on default" do
     assert ExUnit.CaptureIO.capture_io(fn ->

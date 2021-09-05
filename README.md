@@ -67,7 +67,9 @@ config :esbuild,
 ```
 
 When `mix esbuild default` is invoked, the task arguments will be appended
-to the ones configured above.
+to the ones configured above. Note profiles must be configured in your
+`config/config.exs`, as `esbuild` runs without starting your application
+(and therefore it won't pick settings in `config/runtime.exs`).
 
 ## Adding to Phoenix
 
@@ -84,8 +86,8 @@ def deps do
 end
 ```
 
-Now let's configure `esbuild` to use `assets/js/app.js` as an entry point and
-write to `priv/static/assets`:
+Now let's change `config/config.exs` to configure `esbuild` to use
+`assets/js/app.js` as an entry point and write to `priv/static/assets`:
 
 ```elixir
 config :esbuild,

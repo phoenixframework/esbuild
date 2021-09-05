@@ -4,26 +4,26 @@ defmodule Mix.Tasks.Esbuild do
 
   Usage:
 
-  ```bash
-  $ mix esbuild TASK_OPTIONS PROFILE ESBUILD_ARGS
-  ```
+      $ mix esbuild TASK_OPTIONS PROFILE ESBUILD_ARGS
 
   Example:
 
-  ```bash
-  $ mix esbuild default assets/js/app.js --bundle --minify --target=es2016 --outdir=priv/static/assets
-  ```
+      $ mix esbuild default assets/js/app.js --bundle --minify --target=es2016 --outdir=priv/static/assets
 
   If esbuild is not installed, it is automatically downloaded.
   Note the arguments given to this task will be appended
   to any configured arguments.
 
-  Flags to control this Mix task must be given before the
+  ## Options
+
+    * `--runtime-config` - load the runtime configuration
+      before executing command
+
+  Note flags to control this Mix task must be given before the
   profile:
 
-  ```bash
-  $ mix esbuild --no-runtime-config default assets/js/app.js
-  ```
+      $ mix esbuild --runtime-config default assets/js/app.js
+
   """
 
   @shortdoc "Invokes esbuild with the profile and args"
@@ -35,8 +35,10 @@ defmodule Mix.Tasks.Esbuild do
     switches = [runtime_config: :boolean]
     {opts, remaining_args} = OptionParser.parse_head!(args, switches: switches)
 
-    if Keyword.get(opts, :runtime_config, true) and Code.ensure_loaded?(Mix.Tasks.App.Config) do
+    if opts[:runtime_config] do
       Mix.Task.run("app.config")
+    else
+      Application.ensure_all_started(:esbuild)
     end
 
     Mix.Task.reenable("esbuild")
