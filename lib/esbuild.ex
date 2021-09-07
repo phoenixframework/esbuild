@@ -187,7 +187,6 @@ defmodule Esbuild do
           "amd64" -> "#{osname}-64"
           "x86_64" -> "#{osname}-64"
           "aarch64" -> "#{osname}-arm64"
-
           # TODO: remove when we require OTP 24
           "arm" when osname == :darwin -> "darwin-arm64"
           "arm" -> "#{osname}-arm"
