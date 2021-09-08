@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.3.1 (2021-09-08)
+
+  * Fix target detection on arm32
+
 ## v0.3.0 (2021-09-05)
 
   * No longer load `config/runtime.exs` by default, instead support `--runtime-config` flag
