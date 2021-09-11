@@ -1,7 +1,7 @@
 import Config
 
 config :esbuild,
-  version: "0.12.18",
+  version: "0.12.26",
   another: [
     args: ["--version"]
   ]
