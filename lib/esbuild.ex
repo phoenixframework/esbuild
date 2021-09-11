@@ -1,6 +1,9 @@
 defmodule Esbuild do
+  # https://registry.npmjs.org/esbuild/latest
+  @latest_version "0.12.26"
+
   @moduledoc """
-  Esbuild is a installer and runner for [esbuild](https://github.com/evanw/esbuild/).
+  Esbuild is an installer and runner for [esbuild](https://esbuild.github.io).
 
   ## Profiles
 
@@ -9,7 +12,7 @@ defmodule Esbuild do
   directory and environment:
 
       config :esbuild,
-        version: "0.12.18",
+        version: "#{@latest_version}",
         default: [
           args: ~w(js/app.js --bundle --target=es2016 --outdir=../priv/static/assets),
           cd: Path.expand("../assets", __DIR__),
@@ -51,9 +54,7 @@ defmodule Esbuild do
 
   @doc false
   # Latest known version at the time of publishing.
-  def latest_version do
-    "0.12.18"
-  end
+  def latest_version, do: @latest_version
 
   @doc """
   Returns the configured esbuild version.
