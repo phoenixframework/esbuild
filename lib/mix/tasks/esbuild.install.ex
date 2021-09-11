@@ -12,8 +12,12 @@ defmodule Mix.Tasks.Esbuild.Install do
 
       config :esbuild, :version, "#{Esbuild.latest_version()}"
 
-  You can pass the `--if-missing` flag to only install it if
-  one does not yet exist at the given version.
+  ## Options
+
+      * `--runtime-config` - load the runtime configuration
+      before executing command
+      * `--if-missing` - install only if the given version
+      does not exist
   """
 
   @shortdoc "Installs esbuild under _build"
@@ -21,15 +25,15 @@ defmodule Mix.Tasks.Esbuild.Install do
 
   @impl true
   def run(args) do
-    case OptionParser.parse_head!(args, strict: [if_missing: :boolean]) do
+    valid_options = [runtime_config: :boolean, if_missing: :boolean]
+
+    case OptionParser.parse_head!(args, strict: valid_options) do
       {opts, []} ->
+        if opts[:runtime_config], do: Mix.Task.run("app.config")
+
         if opts[:if_missing] && latest_version?() do
           :ok
         else
-          if Code.ensure_loaded?(Mix.Tasks.App.Config) do
-            Mix.Task.run("app.config")
-          end
-
           Esbuild.install()
         end
 
@@ -38,6 +42,7 @@ defmodule Mix.Tasks.Esbuild.Install do
         Invalid arguments to esbuild.install, expected one of:
 
             mix esbuild.install
+            mix esbuild.install --runtime-config
             mix esbuild.install --if-missing
         """)
     end
