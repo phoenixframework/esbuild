@@ -15,9 +15,10 @@ defmodule Mix.Tasks.Esbuild.Install do
   ## Options
 
       * `--runtime-config` - load the runtime configuration
-      before executing command
+        before executing command
+
       * `--if-missing` - install only if the given version
-      does not exist
+        does not exist
   """
 
   @shortdoc "Installs esbuild under _build"
