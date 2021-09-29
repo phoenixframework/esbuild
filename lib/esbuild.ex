@@ -18,6 +18,13 @@ defmodule Esbuild do
           cd: Path.expand("../assets", __DIR__),
           env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
         ]
+
+  ## Modes for installing esbuild
+
+  The config key `:installmode` controls how the esbuild executable is downloaded and installed.
+  - `:download` - downloads esbuild as described in https://esbuild.github.io/getting-started/#download-a-build.
+    `:download` is default value for this key.
+  - `:npm` - downloads esbuild using an existing npm installation. See https://esbuild.github.io/getting-started/#install-esbuild
   """
 
   use Application
@@ -148,30 +155,53 @@ defmodule Esbuild do
   Installs esbuild with `configured_version/0`.
   """
   def install do
-    version = configured_version()
     tmp_dir = Path.join(System.tmp_dir!(), "phx-esbuild")
     File.rm_rf!(tmp_dir)
     File.mkdir_p!(tmp_dir)
 
-    name = "esbuild-#{target()}"
-    url = "https://registry.npmjs.org/#{name}/-/#{name}-#{version}.tgz"
-    tar = fetch_body!(url)
-
-    case :erl_tar.extract({:binary, tar}, [:compressed, cwd: to_charlist(tmp_dir)]) do
-      :ok -> :ok
-      other -> raise "couldn't unpack archive: #{inspect(other)}"
-    end
+    {:ok, package_dir}  = download!(Application.get_env(:esbuild, :installmode, :download), tmp_dir)
 
     bin_path = bin_path()
     File.mkdir_p!(Path.dirname(bin_path))
 
     case :os.type() do
       {:win32, _} ->
-        File.cp!(Path.join([tmp_dir, "package", "esbuild.exe"]), bin_path)
+        File.cp!(Path.join([package_dir, "esbuild.exe"]), bin_path)
 
       _ ->
-        File.cp!(Path.join([tmp_dir, "package", "bin", "esbuild"]), bin_path)
+        File.cp!(Path.join([package_dir, "bin", "esbuild"]), bin_path)
     end
+  end
+
+  defp download!(:download, tmp_dir) do
+    version = configured_version()
+    name = "esbuild-#{target()}"
+    url = "https://registry.npmjs.org/#{name}/-/#{name}-#{version}.tgz"
+    tar = fetch_body!(url)
+
+    case :erl_tar.extract({:binary, tar}, [:compressed, cwd: to_charlist(tmp_dir)]) do
+      :ok -> {:ok, Path.join([tmp_dir, "package"])}
+      other -> raise "couldn't unpack archive: #{inspect(other)}"
+    end
+  end
+
+  defp download!(:npm, tmp_dir) do
+    case call_npm(tmp_dir, configured_version()) do
+    {_, 0} ->
+      {:ok, Path.join([tmp_dir, "node_modules", "esbuild"])}
+    {npm_out, _} ->
+      raise "couldn't install with npm:\n #{npm_out}"
+   end
+  end
+
+  defp call_npm(tmp_dir, version) do
+    case :os.type() do
+        {:win32, _} ->
+          System.cmd("cmd", ["/c", "npm", "install", "esbuild@#{version}", "-save=false"], cd: tmp_dir, stderr_to_stdout: true)
+
+        _ ->
+          System.cmd("npm", ["install", "esbuild@#{version}", "-save=false"], cd: tmp_dir, stderr_to_stdout: true)
+      end
   end
 
   # Available targets: https://github.com/evanw/esbuild/tree/master/npm
