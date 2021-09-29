@@ -30,18 +30,30 @@ defmodule Esbuild do
       the `_build` directory of your current app
 
   Overriding the `:path` is not recommended, as we will automatically
-  download and manage `esbuild` for you, but in case you can't download
+  download and manage `esbuild` for you. But in case you can't download
   it (for example, the npm registry is behind a proxy), you may want to
-  set the `:path` to a configurable system location. In your config files,
-  do:
+  set the `:path` to a configurable system location.
 
-      config :esbuild, path: System.get_env("MIX_ESBUILD_PATH")
-
-  And then you can install `esbuild` elsewhere and configure the relevant
-  environment variable. In a Unix system, one might do:
+  For instance, you can install `esbuild` globally with `npm`:
 
       $ npm install -g esbuild
-      $ export MIX_ESBUILD_PATH=`which esbuild`
+
+  On Unix, the executable will be at:
+
+      NPM_ROOT/esbuild/node_modules/esbuild-TARGET/bin/esbuild
+
+  On Windows, it will be at:
+
+      NPM_ROOT/esbuild/node_modules/esbuild-windows-(32|64)/esbuild.exe
+
+  Where `NPM_ROOT` is the result of `npm root -g` and `TARGET` is your system
+  target architecture.
+
+  Once you find the location of the executable, you can store it in a
+  `MIX_ESBUILD_PATH` environemnt variable, which you can then read in
+  your configuration file:
+
+      config :esbuild, path: System.get_env("MIX_ESBUILD_PATH")
 
   """
 
