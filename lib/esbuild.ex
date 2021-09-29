@@ -203,6 +203,11 @@ defmodule Esbuild do
     {:ok, _} = Application.ensure_all_started(:inets)
     {:ok, _} = Application.ensure_all_started(:ssl)
 
+    if proxy = System.get_env("http_proxy") do
+      %{host: host, port: port} = URI.parse(proxy)
+      :httpc.set_options([{:proxy, {{String.to_charlist(host), port}, []}}])
+    end
+
     # https://erlef.github.io/security-wg/secure_coding_and_deployment_hardening/inets
     cacertfile = CAStore.file_path() |> String.to_charlist()
 
