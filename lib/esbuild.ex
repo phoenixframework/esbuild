@@ -203,9 +203,16 @@ defmodule Esbuild do
     {:ok, _} = Application.ensure_all_started(:inets)
     {:ok, _} = Application.ensure_all_started(:ssl)
 
-    if proxy = System.get_env("http_proxy") do
+    if proxy = System.get_env("HTTP_PROXY") || System.get_env("http_proxy") do
+      Logger.debug("Using HTTP_PROXY: #{proxy}")
       %{host: host, port: port} = URI.parse(proxy)
       :httpc.set_options([{:proxy, {{String.to_charlist(host), port}, []}}])
+    end
+
+    if proxy = System.get_env("HTTPS_PROXY") || System.get_env("https_proxy") do
+      Logger.debug("Using HTTPS_PROXY: #{proxy}")
+      %{host: host, port: port} = URI.parse(proxy)
+      :httpc.set_options([{:https_proxy, {{String.to_charlist(host), port}, []}}])
     end
 
     # https://erlef.github.io/security-wg/secure_coding_and_deployment_hardening/inets
