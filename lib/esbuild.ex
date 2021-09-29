@@ -18,6 +18,31 @@ defmodule Esbuild do
           cd: Path.expand("../assets", __DIR__),
           env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
         ]
+
+  ## Esbuild configuration
+
+  There are two global configurations for the esbuild application:
+
+    * `:version` - the expected esbuild version
+
+    * `:path` - the path to find the esbuild executable at. By
+      default, it is automatically downloaded and placed inside
+      the `_build` directory of your current app
+
+  Overriding the `:path` is not recommended, as we will automatically
+  download and manage `esbuild` for you, but in case you can't download
+  it (for example, the npm registry is behind a proxy), you may want to
+  set the `:path` to a configurable system location. In your config files,
+  do:
+
+      config :esbuild, path: System.get_env("MIX_ESBUILD_PATH")
+
+  And then you can install `esbuild` elsewhere and configure the relevant
+  environment variable. In a Unix system, one might do:
+
+      $ npm install -g esbuild
+      $ export MIX_ESBUILD_PATH=`which esbuild`
+
   """
 
   use Application
@@ -88,7 +113,8 @@ defmodule Esbuild do
   The executable may not be available if it was not yet installed.
   """
   def bin_path do
-    Path.join(Path.dirname(Mix.Project.build_path()), "esbuild")
+    Application.get_env(:esbuild, :path) ||
+      Path.join(Path.dirname(Mix.Project.build_path()), "esbuild")
   end
 
   @doc """
