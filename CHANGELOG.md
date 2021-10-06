@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.3.2 (2021-10-06)
+
+  * Do not load runtime config by default on `esbuild.install` task
+  * Update latest known `esbuild` version
+  * Allow `config :esbuild, :path, path` to configure the path to the esbuild install
+  * Support `HTTP_PROXY/HTTPS_PROXY` to fetch esbuild
+
 ## v0.3.1 (2021-09-08)
 
   * Fix target detection on arm32
