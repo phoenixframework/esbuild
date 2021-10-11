@@ -129,7 +129,7 @@ defmodule Esbuild do
       if Code.ensure_loaded?(Mix.Project) do
         Path.join(Path.dirname(Mix.Project.build_path()), "esbuild")
       else
-        "_build/esbuild"
+        Path.expand("_build/esbuild")
       end
   end
 
