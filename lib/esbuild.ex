@@ -126,7 +126,11 @@ defmodule Esbuild do
   """
   def bin_path do
     Application.get_env(:esbuild, :path) ||
-      Path.join(Path.dirname(Mix.Project.build_path()), "esbuild")
+      if Code.ensure_loaded?(Mix.Project) do
+        Path.join(Path.dirname(Mix.Project.build_path()), "esbuild")
+      else
+        "_build/esbuild"
+      end
   end
 
   @doc """
