@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.3.3 (2021-10-11)
+
+  * Fallback ix Mix.Project is not available
+
 ## v0.3.2 (2021-10-06)
 
   * Do not load runtime config by default on `esbuild.install` task
