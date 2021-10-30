@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v0.3.4 (2021-10-30)
+
+  * Support armv7l
+  * Update esbuild to 0.13.10
+
 ## v0.3.3 (2021-10-11)
 
   * Fallback if Mix.Project is not available
