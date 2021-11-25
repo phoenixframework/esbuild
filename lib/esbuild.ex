@@ -191,7 +191,9 @@ defmodule Esbuild do
   """
   def install do
     version = configured_version()
-    tmp_dir = Path.join(System.tmp_dir!(), "phx-esbuild")
+    tmp_opts = if System.get_env("MIX_XDG"), do: %{os: :linux}, else: %{}
+    tmp_dir = :filename.basedir(:user_cache, "phx-esbuild", tmp_opts)
+
     File.rm_rf!(tmp_dir)
     File.mkdir_p!(tmp_dir)
 
