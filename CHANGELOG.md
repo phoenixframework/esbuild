@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.4.0 (2021-11-27)
+
+  * Attach system target architecture to saved esbuild executable
+  * Store download on user cache directory
+  * Update esbuild to 0.14.0
+  * Add support for 32bit linux
+
 ## v0.3.4 (2021-10-30)
 
   * Support armv7l
