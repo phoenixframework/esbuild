@@ -50,7 +50,7 @@ defmodule Esbuild do
   target architecture.
 
   Once you find the location of the executable, you can store it in a
-  `MIX_ESBUILD_PATH` environemnt variable, which you can then read in
+  `MIX_ESBUILD_PATH` environment variable, which you can then read in
   your configuration file:
 
       config :esbuild, path: System.get_env("MIX_ESBUILD_PATH")
@@ -125,11 +125,13 @@ defmodule Esbuild do
   The executable may not be available if it was not yet installed.
   """
   def bin_path do
+    name = "esbuild-#{target()}"
+
     Application.get_env(:esbuild, :path) ||
       if Code.ensure_loaded?(Mix.Project) do
-        Path.join(Path.dirname(Mix.Project.build_path()), "esbuild")
+        Path.join(Path.dirname(Mix.Project.build_path()), name)
       else
-        Path.expand("_build/esbuild")
+        Path.expand("_build/#{name}")
       end
   end
 
@@ -238,7 +240,7 @@ defmodule Esbuild do
           "arm" when osname == :darwin -> "darwin-arm64"
           "arm" -> "#{osname}-arm"
           "armv7l" -> "#{osname}-arm"
-          _ -> raise "could not download esbuild for architecture: #{arch_str}"
+          _ -> raise "esbuild is not available for architecture: #{arch_str}"
         end
     end
   end
