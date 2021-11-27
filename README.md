@@ -48,13 +48,14 @@ And invoke esbuild with:
 $ mix esbuild default assets/js/app.js --bundle --minify --target=es2016 --outdir=priv/static/assets/
 ```
 
-The executable is kept at `_build/esbuild`.
+The executable is kept at `_build/esbuild-TARGET`.
+Where `TARGET` is your system target architecture.
 
 ## Profiles
 
 The first argument to `esbuild` is the execution profile.
 You can define multiple execution profiles with the current
-directory, the OS enviroment, and default arguments to the
+directory, the OS environment, and default arguments to the
 `esbuild` task:
 
 ```elixir
