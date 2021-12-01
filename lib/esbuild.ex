@@ -194,10 +194,11 @@ defmodule Esbuild do
   def install do
     version = configured_version()
     tmp_opts = if System.get_env("MIX_XDG"), do: %{os: :linux}, else: %{}
-    tmp_dir = :filename.basedir(:user_cache, "phx-esbuild", tmp_opts)
 
-    File.rm_rf!(tmp_dir)
-    File.mkdir_p!(tmp_dir)
+    tmp_dir =
+      freshdir_p(:filename.basedir(:user_cache, "phx-esbuild", tmp_opts)) ||
+        freshdir_p(Path.join(System.tmp_dir!(), "phx-esbuild")) ||
+        raise "could not install esbuild. Set MIX_XGD=1 and then set XDG_CACHE_HOME to the path you want to use as cache"
 
     name = "esbuild-#{target()}"
     url = "https://registry.npmjs.org/#{name}/-/#{name}-#{version}.tgz"
@@ -217,6 +218,15 @@ defmodule Esbuild do
 
       _ ->
         File.cp!(Path.join([tmp_dir, "package", "bin", "esbuild"]), bin_path)
+    end
+  end
+
+  defp freshdir_p(path) do
+    with {:ok, _} <- File.rm_rf(path),
+         :ok <- File.mkdir_p(path) do
+      path
+    else
+      _ -> nil
     end
   end
 
