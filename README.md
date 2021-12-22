@@ -146,17 +146,15 @@ it to the same directory as your `app.js`:
 import "../css/app.css"
 ```
 
-However, if you want to use a CSS framework, such as SASS or Tailwind,
-you will need to use a separate tool. Here are some options to do so:
+However, if you want to use a CSS framework, you will need to use a separate tool.
+Here are some options to do so:
+
+  * Use [standalone Tailwind](https://github.com/phoenixframework/tailwind) or
+    [standalone SASS](https://github.com/CargoSense/dart_sass). Both similar to
+    `esbuild`.
 
   * You can use `esbuild` plugins (requires `npm`). See [Phoenix' official
-    guide on using them](https://hexdocs.pm/phoenix/1.6.0-rc.0/asset_management.html).
-
-  * If you want SASS, you can bring [standalone SASS](https://github.com/CargoSense/dart_sass)
-    to your project, without a need for external dependencies (similar to esbuild).
-
-  * You can bring `Node` + `npm` to your application and install any package
-    you want. See [this pull request on how to add Alpine + Tailwind](https://github.com/josevalim/phx_esbuild_demo/pull/3).
+    guide on using them](https://hexdocs.pm/phoenix/asset_management.html).
 
 ## License
 
