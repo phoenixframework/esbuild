@@ -249,8 +249,7 @@ defmodule Esbuild do
           # TODO: remove when we require OTP 24
           "arm" when osname == :darwin -> "darwin-arm64"
           "arm" -> "#{osname}-arm"
-          "armv7" -> "#{osname}-arm"
-          "armv7l" -> "#{osname}-arm"
+          "armv7" <> _ -> "#{osname}-arm"
           _ -> raise "esbuild is not available for architecture: #{arch_str}"
         end
     end
