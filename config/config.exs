@@ -5,5 +5,3 @@ config :esbuild,
   another: [
     args: ["--version"]
   ]
-
-config :esbuild, cacerts_path: System.get_env("ESBUILD_CACERTS_PATH")
