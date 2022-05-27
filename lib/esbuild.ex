@@ -164,7 +164,7 @@ defmodule Esbuild do
 
     args =
       config[:args] ||
-        raise "no args passed to esbuild, check your esbuild config and make sure you're using the correct profile"
+        raise "no args passed to esbuild, check your :esbuild config and make sure you're using the correct profile"
 
     opts = [
       cd: config[:cd] || File.cwd!(),
