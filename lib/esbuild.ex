@@ -163,7 +163,7 @@ defmodule Esbuild do
     config = config_for!(profile)
     args = config[:args] || []
 
-    if args == [] or extra_args == [] do
+    if args == [] and extra_args == [] do
       raise "no arguments passed to esbuild"
     end
 
