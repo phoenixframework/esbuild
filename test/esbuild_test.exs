@@ -4,8 +4,10 @@ defmodule EsbuildTest do
   @version Esbuild.latest_version()
 
   test "run on default" do
+    Application.put_env(:esbuild, :default, args: ["--version"])
+
     assert ExUnit.CaptureIO.capture_io(fn ->
-             assert Esbuild.run(:default, ["--version"]) == 0
+             assert Esbuild.run(:default, []) == 0
            end) =~ @version
   end
 
@@ -21,7 +23,7 @@ defmodule EsbuildTest do
     Mix.Task.rerun("esbuild.install", ["--if-missing"])
 
     assert ExUnit.CaptureIO.capture_io(fn ->
-             assert Esbuild.run(:default, ["--version"]) == 0
+             assert Esbuild.run(:another, []) == 0
            end) =~ "0.12.15"
 
     Application.delete_env(:esbuild, :version)
@@ -29,7 +31,7 @@ defmodule EsbuildTest do
     Mix.Task.rerun("esbuild.install", ["--if-missing"])
 
     assert ExUnit.CaptureIO.capture_io(fn ->
-             assert Esbuild.run(:default, ["--version"]) == 0
+             assert Esbuild.run(:another, []) == 0
            end) =~ @version
   end
 end

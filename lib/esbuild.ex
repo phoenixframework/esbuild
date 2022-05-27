@@ -161,7 +161,10 @@ defmodule Esbuild do
   """
   def run(profile, extra_args) when is_atom(profile) and is_list(extra_args) do
     config = config_for!(profile)
-    args = config[:args] || []
+
+    args =
+      config[:args] ||
+        raise "no args passed to esbuild, check your esbuild config and make sure you're using the correct profile"
 
     opts = [
       cd: config[:cd] || File.cwd!(),
