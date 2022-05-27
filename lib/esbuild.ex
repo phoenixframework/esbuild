@@ -163,6 +163,10 @@ defmodule Esbuild do
     config = config_for!(profile)
     args = config[:args] || []
 
+    if args == [] and extra_args == [] do
+      raise "no arguments passed to esbuild"
+    end
+
     opts = [
       cd: config[:cd] || File.cwd!(),
       env: config[:env] || %{},
