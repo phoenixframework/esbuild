@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.5.0 (2022-05-27)
+
+  * Raise exception if no args are found to use with esbuild
+  * Update esbuild to 0.14.41
+  * Support overridable cacertfile
+  * Add support for armv7
+  * Attempt multiple directories to install esbuild
+
 ## v0.4.0 (2021-11-27)
 
   * Attach system target architecture to saved esbuild executable
