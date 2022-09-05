@@ -204,12 +204,12 @@ defmodule Esbuild do
         freshdir_p(Path.join(System.tmp_dir!(), "phx-esbuild")) ||
         raise "could not install esbuild. Set MIX_XGD=1 and then set XDG_CACHE_HOME to the path you want to use as cache"
 
-    # TODO: Remove version comparison later on
+    # TODO: Remove version comparison if esbuild <= 0.15.7 don't need to be supported anymore
     url =
       if Version.compare(version, "0.15.7") == :gt do
         "https://registry.npmjs.org/@esbuild/-/#{target()}-#{version}.tgz"
       else
-        name = "esbuild-#{target()}"
+        name = "esbuild-#{target_legacy()}"
         "https://registry.npmjs.org/#{name}/-/#{name}-#{version}.tgz"
       end
 
@@ -263,6 +263,32 @@ defmodule Esbuild do
           "x86_64" -> "#{osname}-x64"
           "i686" -> "#{osname}-ia32"
           "i386" -> "#{osname}-ia32"
+          "aarch64" -> "#{osname}-arm64"
+          # TODO: remove when we require OTP 24
+          "arm" when osname == :darwin -> "darwin-arm64"
+          "arm" -> "#{osname}-arm"
+          "armv7" <> _ -> "#{osname}-arm"
+          _ -> raise "esbuild is not available for architecture: #{arch_str}"
+        end
+    end
+  end
+
+  # TODO: Remove if esbuild <= 0.15.7 don't need to be supported anymore
+  # Available targets: https://github.com/evanw/esbuild/tree/v0.15.7/npm
+  defp target_legacy do
+    case :os.type() do
+      {:win32, _} ->
+        "windows-#{:erlang.system_info(:wordsize) * 8}"
+
+      {:unix, osname} ->
+        arch_str = :erlang.system_info(:system_architecture)
+        [arch | _] = arch_str |> List.to_string() |> String.split("-")
+
+        case arch do
+          "amd64" -> "#{osname}-64"
+          "x86_64" -> "#{osname}-64"
+          "i686" -> "#{osname}-32"
+          "i386" -> "#{osname}-32"
           "aarch64" -> "#{osname}-arm64"
           # TODO: remove when we require OTP 24
           "arm" when osname == :darwin -> "darwin-arm64"
