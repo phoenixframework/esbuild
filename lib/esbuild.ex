@@ -204,8 +204,15 @@ defmodule Esbuild do
         freshdir_p(Path.join(System.tmp_dir!(), "phx-esbuild")) ||
         raise "could not install esbuild. Set MIX_XGD=1 and then set XDG_CACHE_HOME to the path you want to use as cache"
 
-    name = "esbuild-#{target()}"
-    url = "https://registry.npmjs.org/#{name}/-/#{name}-#{version}.tgz"
+    # TODO: Remove version comparison later on
+    url =
+      if Version.compare(version, "0.15.7") == :gt do
+        "https://registry.npmjs.org/@esbuild/-/#{target()}-#{version}.tgz"
+      else
+        name = "esbuild-#{target()}"
+        "https://registry.npmjs.org/#{name}/-/#{name}-#{version}.tgz"
+      end
+
     tar = fetch_body!(url)
 
     case :erl_tar.extract({:binary, tar}, [:compressed, cwd: to_charlist(tmp_dir)]) do
@@ -234,21 +241,28 @@ defmodule Esbuild do
     end
   end
 
-  # Available targets: https://github.com/evanw/esbuild/tree/master/npm
+  # Available targets: https://github.com/evanw/esbuild/tree/main/npm/@esbuild
   defp target do
     case :os.type() do
+      # Assuming it's an x86 CPU
       {:win32, _} ->
-        "windows-#{:erlang.system_info(:wordsize) * 8}"
+        wordsize = :erlang.system_info(:wordsize)
+
+        if wordsize == 8 do
+          "win32-x64"
+        else
+          "win32-ia32"
+        end
 
       {:unix, osname} ->
         arch_str = :erlang.system_info(:system_architecture)
         [arch | _] = arch_str |> List.to_string() |> String.split("-")
 
         case arch do
-          "amd64" -> "#{osname}-64"
-          "x86_64" -> "#{osname}-64"
-          "i686" -> "#{osname}-32"
-          "i386" -> "#{osname}-32"
+          "amd64" -> "#{osname}-x64"
+          "x86_64" -> "#{osname}-x64"
+          "i686" -> "#{osname}-ia32"
+          "i386" -> "#{osname}-ia32"
           "aarch64" -> "#{osname}-arm64"
           # TODO: remove when we require OTP 24
           "arm" when osname == :darwin -> "darwin-arm64"
