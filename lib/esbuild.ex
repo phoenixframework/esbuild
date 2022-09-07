@@ -299,7 +299,12 @@ defmodule Esbuild do
         body
 
       other ->
-        raise "couldn't fetch #{url}: #{inspect(other)}"
+        raise """
+        couldn't fetch #{url}: #{inspect(other)}
+
+        You may also install the "esbuild" executable manually, \
+        see the docs: https://hexdocs.pm/esbuild
+        """
     end
   end
 
