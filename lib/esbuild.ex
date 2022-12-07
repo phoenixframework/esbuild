@@ -204,11 +204,11 @@ defmodule Esbuild do
         freshdir_p(Path.join(System.tmp_dir!(), "phx-esbuild")) ||
         raise "could not install esbuild. Set MIX_XGD=1 and then set XDG_CACHE_HOME to the path you want to use as cache"
 
-    # TODO: Remove version comparison if esbuild <= 0.15.7 don't need to be supported anymore
     url =
-      if Version.compare(version, "0.15.7") == :gt do
+      if Version.compare(version, "0.16.0") in [:eq, :gt] do
         "https://registry.npmjs.org/@esbuild/-/#{target()}-#{version}.tgz"
       else
+        # TODO: Remove else clause or raise if esbuild < 0.16.0 don't need to be supported anymore
         name = "esbuild-#{target_legacy()}"
         "https://registry.npmjs.org/#{name}/-/#{name}-#{version}.tgz"
       end
@@ -273,8 +273,8 @@ defmodule Esbuild do
     end
   end
 
-  # TODO: Remove if esbuild <= 0.15.7 don't need to be supported anymore
-  # Available targets: https://github.com/evanw/esbuild/tree/v0.15.7/npm
+  # TODO: Remove if esbuild < 0.16.0 don't need to be supported anymore
+  # Available targets: https://github.com/evanw/esbuild/tree/v0.15.18/npm
   defp target_legacy do
     case :os.type() do
       {:win32, _} ->
