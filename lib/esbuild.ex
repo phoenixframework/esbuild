@@ -40,11 +40,11 @@ defmodule Esbuild do
 
   On Unix, the executable will be at:
 
-      NPM_ROOT/esbuild/node_modules/esbuild-TARGET/bin/esbuild
+      NPM_ROOT/esbuild/node_modules/@esbuild/TARGET/bin/esbuild
 
   On Windows, it will be at:
 
-      NPM_ROOT/esbuild/node_modules/esbuild-windows-(32|64)/esbuild.exe
+      NPM_ROOT/esbuild/node_modules/@esbuild/win32-x(32|64)/esbuild.exe
 
   Where `NPM_ROOT` is the result of `npm root -g` and `TARGET` is your system
   target architecture.
