@@ -1,6 +1,6 @@
 defmodule Esbuild do
   # https://registry.npmjs.org/esbuild/latest
-  @latest_version "0.14.41"
+  @latest_version "0.16.3"
 
   @moduledoc """
   Esbuild is an installer and runner for [esbuild](https://esbuild.github.io).
@@ -206,7 +206,8 @@ defmodule Esbuild do
 
     url =
       if Version.compare(version, "0.16.0") in [:eq, :gt] do
-        "https://registry.npmjs.org/@esbuild/-/#{target()}-#{version}.tgz"
+        target = target()
+        "https://registry.npmjs.org/@esbuild/#{target}/-/#{target}-#{version}.tgz"
       else
         # TODO: Remove else clause or raise if esbuild < 0.16.0 don't need to be supported anymore
         name = "esbuild-#{target_legacy()}"
@@ -263,6 +264,8 @@ defmodule Esbuild do
           "x86_64" -> "#{osname}-x64"
           "i686" -> "#{osname}-ia32"
           "i386" -> "#{osname}-ia32"
+          # force x64 for darwin arm because the arm binary fails code signing
+          "aarch64" when osname == :darwin -> "#{osname}-x64"
           "aarch64" -> "#{osname}-arm64"
           # TODO: remove when we require OTP 24
           "arm" when osname == :darwin -> "darwin-arm64"
@@ -289,6 +292,8 @@ defmodule Esbuild do
           "x86_64" -> "#{osname}-64"
           "i686" -> "#{osname}-32"
           "i386" -> "#{osname}-32"
+          # force x64 for darwin arm because the arm binary fails code signing
+          "aarch64" when osname == :darwin -> "#{osname}-64"
           "aarch64" -> "#{osname}-arm64"
           # TODO: remove when we require OTP 24
           "arm" when osname == :darwin -> "darwin-arm64"
