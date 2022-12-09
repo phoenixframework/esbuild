@@ -40,11 +40,11 @@ defmodule Esbuild do
 
   On Unix, the executable will be at:
 
-      NPM_ROOT/esbuild/node_modules/esbuild-TARGET/bin/esbuild
+      NPM_ROOT/esbuild/node_modules/@esbuild/TARGET/bin/esbuild
 
   On Windows, it will be at:
 
-      NPM_ROOT/esbuild/node_modules/esbuild-windows-(32|64)/esbuild.exe
+      NPM_ROOT/esbuild/node_modules/@esbuild/win32-x(32|64)/esbuild.exe
 
   Where `NPM_ROOT` is the result of `npm root -g` and `TARGET` is your system
   target architecture.
@@ -204,8 +204,15 @@ defmodule Esbuild do
         freshdir_p(Path.join(System.tmp_dir!(), "phx-esbuild")) ||
         raise "could not install esbuild. Set MIX_XGD=1 and then set XDG_CACHE_HOME to the path you want to use as cache"
 
-    name = "esbuild-#{target()}"
-    url = "https://registry.npmjs.org/#{name}/-/#{name}-#{version}.tgz"
+    url =
+      if Version.compare(version, "0.16.0") in [:eq, :gt] do
+        "https://registry.npmjs.org/@esbuild/-/#{target()}-#{version}.tgz"
+      else
+        # TODO: Remove else clause or raise if esbuild < 0.16.0 don't need to be supported anymore
+        name = "esbuild-#{target_legacy()}"
+        "https://registry.npmjs.org/#{name}/-/#{name}-#{version}.tgz"
+      end
+
     tar = fetch_body!(url)
 
     case :erl_tar.extract({:binary, tar}, [:compressed, cwd: to_charlist(tmp_dir)]) do
@@ -234,8 +241,41 @@ defmodule Esbuild do
     end
   end
 
-  # Available targets: https://github.com/evanw/esbuild/tree/master/npm
+  # Available targets: https://github.com/evanw/esbuild/tree/main/npm/@esbuild
   defp target do
+    case :os.type() do
+      # Assuming it's an x86 CPU
+      {:win32, _} ->
+        wordsize = :erlang.system_info(:wordsize)
+
+        if wordsize == 8 do
+          "win32-x64"
+        else
+          "win32-ia32"
+        end
+
+      {:unix, osname} ->
+        arch_str = :erlang.system_info(:system_architecture)
+        [arch | _] = arch_str |> List.to_string() |> String.split("-")
+
+        case arch do
+          "amd64" -> "#{osname}-x64"
+          "x86_64" -> "#{osname}-x64"
+          "i686" -> "#{osname}-ia32"
+          "i386" -> "#{osname}-ia32"
+          "aarch64" -> "#{osname}-arm64"
+          # TODO: remove when we require OTP 24
+          "arm" when osname == :darwin -> "darwin-arm64"
+          "arm" -> "#{osname}-arm"
+          "armv7" <> _ -> "#{osname}-arm"
+          _ -> raise "esbuild is not available for architecture: #{arch_str}"
+        end
+    end
+  end
+
+  # TODO: Remove if esbuild < 0.16.0 don't need to be supported anymore
+  # Available targets: https://github.com/evanw/esbuild/tree/v0.15.18/npm
+  defp target_legacy do
     case :os.type() do
       {:win32, _} ->
         "windows-#{:erlang.system_info(:wordsize) * 8}"
