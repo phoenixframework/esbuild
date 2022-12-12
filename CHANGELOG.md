@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.6.0 (2022-12-12)
+
+  * Support esbuild 0.16.x
+
 ## v0.5.0 (2022-05-27)
 
   * Raise exception if no args are found to use with esbuild
