@@ -265,7 +265,7 @@ defmodule Esbuild do
           "i686" -> "#{osname}-ia32"
           "i386" -> "#{osname}-ia32"
           # force x64 for darwin arm because the arm binary fails code signing
-          "aarch64" when osname == :darwin -> "#{osname}-x64"
+          # "aarch64" when osname == :darwin -> "#{osname}-x64"
           "aarch64" -> "#{osname}-arm64"
           # TODO: remove when we require OTP 24
           "arm" when osname == :darwin -> "darwin-arm64"
@@ -293,7 +293,7 @@ defmodule Esbuild do
           "i686" -> "#{osname}-32"
           "i386" -> "#{osname}-32"
           # force x64 for darwin arm because the arm binary fails code signing
-          "aarch64" when osname == :darwin -> "#{osname}-64"
+          # "aarch64" when osname == :darwin -> "#{osname}-64"
           "aarch64" -> "#{osname}-arm64"
           # TODO: remove when we require OTP 24
           "arm" when osname == :darwin -> "darwin-arm64"
