@@ -34,7 +34,7 @@ defmodule Esbuild.MixProject do
   def application do
     [
       # inets/ssl may be used by Mix tasks but we should not impose them.
-      extra_applications: [:logger],
+      extra_applications: [:logger, :inets, :ssl],
       mod: {Esbuild, []},
       env: [default: []]
     ]
