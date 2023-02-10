@@ -1,14 +1,14 @@
 defmodule Esbuild.MixProject do
   use Mix.Project
 
-  @version "0.6.1"
+  @version "0.7.0-dev"
   @source_url "https://github.com/phoenixframework/esbuild"
 
   def project do
     [
       app: :esbuild,
       version: @version,
-      elixir: "~> 1.10",
+      elixir: "~> 1.11",
       deps: deps(),
       description: "Mix tasks for installing and invoking esbuild",
       package: [
@@ -30,7 +30,7 @@ defmodule Esbuild.MixProject do
 
   def application do
     [
-      extra_applications: [:logger, :inets, :ssl],
+      extra_applications: [:logger, inets: :optional, ssl: :optional],
       mod: {Esbuild, []},
       env: [default: []]
     ]
