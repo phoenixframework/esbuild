@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## v0.7.0-dev
+## v0.7.0 (2023-03-16)
   * Require Elixir v1.11+
+  * Support proxy authentication
 
 ## v0.6.1 (2023-02-09)
   * Declare inets and ssl for latest elixir support
