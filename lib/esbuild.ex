@@ -25,6 +25,9 @@ defmodule Esbuild do
 
     * `:version` - the expected esbuild version
 
+    * `:cacerts_path` - the directory to find certificates for
+      https connections
+
     * `:path` - the path to find the esbuild executable at. By
       default, it is automatically downloaded and placed inside
       the `_build` directory of your current app
