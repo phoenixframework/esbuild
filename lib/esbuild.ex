@@ -89,7 +89,7 @@ defmodule Esbuild do
         :ok
     end
 
-    Supervisor.start_link([], strategy: :one_for_one)
+    Supervisor.start_link([], strategy: :one_for_one, name: __MODULE__.Supervisor)
   end
 
   @doc false
@@ -182,15 +182,30 @@ defmodule Esbuild do
     |> elem(1)
   end
 
+  defp start_unique_install_worker() do
+    ref =
+      __MODULE__.Supervisor
+      |> Supervisor.start_child(
+        Supervisor.child_spec({Task, &install/0}, restart: :transient, id: __MODULE__.Installer)
+      )
+      |> case do
+        {:ok, pid} -> pid
+        {:error, {:already_started, pid}} -> pid
+      end
+      |> Process.monitor()
+
+    receive do
+      {:DOWN, ^ref, _, _, _} -> :ok
+    end
+  end
+
   @doc """
   Installs, if not available, and then runs `esbuild`.
 
   Returns the same as `run/2`.
   """
   def install_and_run(profile, args) do
-    unless File.exists?(bin_path()) do
-      install()
-    end
+    File.exists?(bin_path()) || start_unique_install_worker()
 
     run(profile, args)
   end
