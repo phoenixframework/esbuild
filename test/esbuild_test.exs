@@ -31,6 +31,8 @@ defmodule EsbuildTest do
     assert ExUnit.CaptureIO.capture_io(fn ->
              assert Esbuild.run(:default, ["--version"]) == 0
            end) =~ @version
+  after
+    Application.delete_env(:esbuild, :version)
   end
 
   test "install and run multiple concurrently" do
@@ -54,7 +56,6 @@ defmodule EsbuildTest do
       |> Task.await_many(:infinity)
 
     File.chmod!(bin_path, 0o700)
-
     assert results |> Enum.all?()
   end
 end
