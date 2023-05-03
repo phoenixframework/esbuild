@@ -39,7 +39,7 @@ defmodule EsbuildTest do
     assert :ok = File.exists?(bin_path) && File.rm!(bin_path)
 
     results =
-      [:default, :another, :extra]
+      [:extra1, :extra2, :extra3]
       |> Enum.map(fn profile ->
         Application.put_env(:esbuild, profile, args: ["--version"])
 
