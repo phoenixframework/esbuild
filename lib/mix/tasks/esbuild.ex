@@ -27,6 +27,7 @@ defmodule Mix.Tasks.Esbuild do
   """
 
   @shortdoc "Invokes esbuild with the profile and args"
+  @compile {:no_warn_undefined, Mix}
 
   use Mix.Task
 

@@ -22,6 +22,8 @@ defmodule Mix.Tasks.Esbuild.Install do
   """
 
   @shortdoc "Installs esbuild under _build"
+  @compile {:no_warn_undefined, Mix}
+
   use Mix.Task
 
   @impl true
