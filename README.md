@@ -13,7 +13,7 @@ in dev:
 ```elixir
 def deps do
   [
-    {:esbuild, "~> 0.5", runtime: Mix.env() == :dev}
+    {:esbuild, "~> 0.7", runtime: Mix.env() == :dev}
   ]
 end
 ```
@@ -24,7 +24,7 @@ then it only needs to be a dev dependency:
 ```elixir
 def deps do
   [
-    {:esbuild, "~> 0.5", only: :dev}
+    {:esbuild, "~> 0.7", only: :dev}
   ]
 end
 ```
@@ -33,7 +33,7 @@ Once installed, change your `config/config.exs` to pick your
 esbuild version of choice:
 
 ```elixir
-config :esbuild, version: "0.14.41"
+config :esbuild, version: "0.18.6"
 ```
 
 Now you can install esbuild by running:
@@ -60,7 +60,7 @@ directory, the OS environment, and default arguments to the
 
 ```elixir
 config :esbuild,
-  version: "0.14.41",
+  version: "0.18.6",
   default: [
     args: ~w(js/app.js),
     cd: Path.expand("../assets", __DIR__)
@@ -82,7 +82,7 @@ First add it as a dependency in your `mix.exs`:
 def deps do
   [
     {:phoenix, github: "phoenixframework/phoenix", branch: "v1.5", override: true},
-    {:esbuild, "~> 0.5", runtime: Mix.env() == :dev}
+    {:esbuild, "~> 0.7", runtime: Mix.env() == :dev}
   ]
 end
 ```
@@ -92,7 +92,7 @@ Now let's change `config/config.exs` to configure `esbuild` to use
 
 ```elixir
 config :esbuild,
-  version: "0.14.41",
+  version: "0.18.6",
   default: [
     args: ~w(js/app.js --bundle --target=es2016 --outdir=../priv/static/assets),
     cd: Path.expand("../assets", __DIR__),
@@ -134,7 +134,7 @@ to add them to your application:
      directory and `esbuild` will be able to automatically
      pick them up:
 
-         import topbar from "topbar"     
+         import topbar from "topbar"
 
 ## CSS
 
