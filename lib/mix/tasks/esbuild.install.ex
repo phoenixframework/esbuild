@@ -35,6 +35,11 @@ defmodule Mix.Tasks.Esbuild.Install do
         if opts[:if_missing] && latest_version?() do
           :ok
         else
+          if function_exported?(Mix, :ensure_application!, 1) do
+            Mix.ensure_application!(:inets)
+            Mix.ensure_application!(:ssl)
+          end
+
           Esbuild.install()
         end
 

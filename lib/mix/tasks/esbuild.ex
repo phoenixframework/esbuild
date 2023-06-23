@@ -35,6 +35,11 @@ defmodule Mix.Tasks.Esbuild do
     switches = [runtime_config: :boolean]
     {opts, remaining_args} = OptionParser.parse_head!(args, switches: switches)
 
+    if function_exported?(Mix, :ensure_application!, 1) do
+      Mix.ensure_application!(:inets)
+      Mix.ensure_application!(:ssl)
+    end
+
     if opts[:runtime_config] do
       Mix.Task.run("app.config")
     else
