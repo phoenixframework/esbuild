@@ -66,7 +66,7 @@ defmodule Esbuild do
   @doc false
   def start(_, _) do
     unless Application.get_env(:esbuild, :version) do
-      Logger.warn("""
+      Logger.warning("""
       esbuild version is not configured. Please set it in your config files:
 
           config :esbuild, :version, "#{latest_version()}"
@@ -80,7 +80,7 @@ defmodule Esbuild do
         :ok
 
       {:ok, version} ->
-        Logger.warn("""
+        Logger.warning("""
         Outdated esbuild version. Expected #{configured_version}, got #{version}. \
         Please run `mix esbuild.install` or update the version in your config files.\
         """)
