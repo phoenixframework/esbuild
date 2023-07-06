@@ -1,7 +1,10 @@
 defmodule Downloader do
   require Logger
 
-  def fetch_body!(url) do
+  @base_url "https://registry.npmjs.org"
+
+  def fetch_body!(path) do
+    url = @base_url <> path
     scheme = URI.parse(url).scheme
     url = String.to_charlist(url)
     Logger.debug("Downloading esbuild from #{url}")
