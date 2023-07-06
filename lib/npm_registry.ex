@@ -1,9 +1,9 @@
-defmodule Downloader do
+defmodule NpmRegistry do
   require Logger
 
   @base_url "https://registry.npmjs.org"
 
-  def fetch_body!(path) do
+  def fetch_file!(path) do
     url = @base_url <> path
     scheme = URI.parse(url).scheme
     Logger.debug("Downloading esbuild from #{url}")

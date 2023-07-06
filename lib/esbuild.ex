@@ -232,7 +232,7 @@ defmodule Esbuild do
         "/#{name}/-/#{name}-#{version}.tgz"
       end
 
-    tar = Downloader.fetch_body!(path)
+    tar = NpmRegistry.fetch_file!(path)
 
     case :erl_tar.extract({:binary, tar}, [:compressed, cwd: to_charlist(tmp_dir)]) do
       :ok -> :ok
