@@ -6,7 +6,6 @@ defmodule Downloader do
   def fetch_body!(path) do
     url = @base_url <> path
     scheme = URI.parse(url).scheme
-    url = String.to_charlist(url)
     Logger.debug("Downloading esbuild from #{url}")
 
     {:ok, _} = Application.ensure_all_started(:inets)
@@ -19,25 +18,7 @@ defmodule Downloader do
       :httpc.set_options([{set_option, {{String.to_charlist(host), port}, []}}])
     end
 
-    # https://erlef.github.io/security-wg/secure_coding_and_deployment_hardening/inets
-    cacertfile = cacertfile() |> String.to_charlist()
-
-    http_options =
-      [
-        ssl: [
-          verify: :verify_peer,
-          cacertfile: cacertfile,
-          depth: 2,
-          customize_hostname_check: [
-            match_fun: :public_key.pkix_verify_hostname_match_fun(:https)
-          ]
-        ]
-      ]
-      |> maybe_add_proxy_auth(scheme)
-
-    options = [body_format: :binary]
-
-    case :httpc.request(:get, {url, []}, http_options, options) do
+    case do_fetch(url) do
       {:ok, {{_, 200, _}, _headers, body}} ->
         body
 
@@ -49,6 +30,28 @@ defmodule Downloader do
         see the docs: https://hexdocs.pm/esbuild
         """
     end
+  end
+
+  defp do_fetch(url) do
+    scheme = URI.parse(url).scheme
+    url = String.to_charlist(url)
+
+    :httpc.request(
+      :get,
+      {url, []},
+      [
+        ssl: [
+          verify: :verify_peer,
+          # https://erlef.github.io/security-wg/secure_coding_and_deployment_hardening/inets
+          cacertfile: cacertfile() |> String.to_charlist(),
+          depth: 2,
+          customize_hostname_check: [
+            match_fun: :public_key.pkix_verify_hostname_match_fun(:https)
+          ]
+        ]
+      ] |> maybe_add_proxy_auth(scheme),
+      [body_format: :binary]
+    )
   end
 
   defp proxy_for_scheme("http") do
