@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/phoenixframework/esbuild/actions/workflows/main.yml/badge.svg)](https://github.com/phoenixframework/esbuild/actions/workflows/main.yml)
 
-Mix tasks for installing and invoking [esbuild](https://github.com/evanw/esbuild/).
+Mix tasks for installing and invoking [esbuild](https://esbuild.github.io/).
 
 ## Installation
 
@@ -29,8 +29,8 @@ def deps do
 end
 ```
 
-Once installed, change your `config/config.exs` to pick your
-esbuild version of choice:
+Once installed, change your `config/config.exs` and [pick a version
+for the esbuild CLI](https://github.com/evanw/esbuild/releases) of your choice:
 
 ```elixir
 config :esbuild, version: "0.18.6"
