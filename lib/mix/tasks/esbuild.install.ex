@@ -32,7 +32,11 @@ defmodule Mix.Tasks.Esbuild.Install do
 
     case OptionParser.parse_head!(args, strict: valid_options) do
       {opts, []} ->
-        if opts[:runtime_config], do: Mix.Task.run("app.config")
+        if opts[:runtime_config] do
+          Mix.Task.run("app.config")
+        else
+          Mix.Task.run("loadpaths")
+        end
 
         if opts[:if_missing] && latest_version?() do
           :ok
