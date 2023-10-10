@@ -23,8 +23,15 @@ defmodule NpmRegistry do
       fetch_file!("#{@base_url}/#{name}/#{version}")
       |> Jason.decode!()
 
+    [hash_alg, checksum] =
+      integrity
+      |> String.split("-")
+
     verify_signature!("#{id}:#{integrity}", signature)
-    fetch_file!(tarball)
+    tar = fetch_file!(tarball)
+    verify_integrity!(tar, hash_alg, Base.decode64!(checksum))
+
+    tar
   end
 
   defp fetch_file!(url) do
@@ -116,10 +123,19 @@ defmodule NpmRegistry do
     ) || raise "invalid signature"
   end
 
+  defp verify_integrity!(binary, hash_alg, checksum) do
+    hash_alg
+    |> hash_alg_to_erlang()
+    |> :crypto.hash(binary)
+    |>:crypto.hash_equals(checksum) || raise "invalid checksum"
+  end
+
   defp public_key do
     [entry] = :public_key.pem_decode(@public_key_pem)
     {{:ECPoint, ec_point}, _} = :public_key.pem_entry_decode(entry)
 
     ec_point
   end
+
+  defp hash_alg_to_erlang("sha512"), do: :sha512
 end
