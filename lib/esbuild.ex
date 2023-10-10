@@ -231,7 +231,7 @@ defmodule Esbuild do
         "esbuild-#{target_legacy()}"
       end
 
-    tar = NpmRegistry.fetch_package!(name, version)
+    tar = Esbuild.NpmRegistry.fetch_package!(name, version)
 
     case :erl_tar.extract({:binary, tar}, [:compressed, cwd: to_charlist(tmp_dir)]) do
       :ok -> :ok
