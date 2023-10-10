@@ -128,10 +128,12 @@ defmodule Esbuild.NpmRegistry do
   end
 
   defp verify_integrity!(binary, hash_alg, checksum) do
-    hash_alg
-    |> hash_alg_to_erlang()
-    |> :crypto.hash(binary)
-    |> :crypto.hash_equals(checksum) || raise "invalid checksum"
+    binary_checksum =
+      hash_alg
+      |> hash_alg_to_erlang()
+      |> :crypto.hash(binary)
+
+    binary_checksum == checksum || raise "invalid checksum"
   end
 
   defp public_key do
