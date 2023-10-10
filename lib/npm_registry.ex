@@ -2,9 +2,32 @@ defmodule NpmRegistry do
   require Logger
 
   @base_url "https://registry.npmjs.org"
+  @public_key_pem File.read!("npm-registry.pem")
+  @public_key_id "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA"
+  @public_key_ec_curve :prime256v1
 
-  def fetch_file!(path) do
-    url = @base_url <> path
+  def fetch_package!(name, version) do
+    %{
+      "_id" => id,
+      "dist" => %{
+        "integrity" => integrity,
+        "signatures" => [
+          %{
+            "keyid" => @public_key_id,
+            "sig" => signature
+          }
+        ],
+        "tarball" => tarball
+      }
+    } =
+      fetch_file!("#{@base_url}/#{name}/#{version}")
+      |> Jason.decode!()
+
+    verify_signature!("#{id}:#{integrity}", signature)
+    fetch_file!(tarball)
+  end
+
+  defp fetch_file!(url) do
     scheme = URI.parse(url).scheme
     Logger.debug("Downloading esbuild from #{url}")
 
@@ -81,5 +104,22 @@ defmodule NpmRegistry do
 
   defp cacertfile() do
     Application.get_env(:esbuild, :cacerts_path) || CAStore.file_path()
+  end
+
+  defp verify_signature!(message, signature) do
+    :crypto.verify(
+      :ecdsa,
+      :sha256,
+      message,
+      Base.decode64!(signature),
+      [public_key(), @public_key_ec_curve]
+    ) || raise "invalid signature"
+  end
+
+  defp public_key do
+    [entry] = :public_key.pem_decode(@public_key_pem)
+    {{:ECPoint, ec_point}, _} = :public_key.pem_entry_decode(entry)
+
+    ec_point
   end
 end

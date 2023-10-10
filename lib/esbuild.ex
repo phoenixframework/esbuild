@@ -222,17 +222,16 @@ defmodule Esbuild do
         freshdir_p(Path.join(System.tmp_dir!(), "phx-esbuild")) ||
         raise "could not install esbuild. Set MIX_XGD=1 and then set XDG_CACHE_HOME to the path you want to use as cache"
 
-    path =
+    name =
       if Version.compare(version, "0.16.0") in [:eq, :gt] do
         target = target()
-        "/@esbuild/#{target}/-/#{target}-#{version}.tgz"
+        "/@esbuild/#{target}"
       else
         # TODO: Remove else clause or raise if esbuild < 0.16.0 don't need to be supported anymore
-        name = "esbuild-#{target_legacy()}"
-        "/#{name}/-/#{name}-#{version}.tgz"
+        "esbuild-#{target_legacy()}"
       end
 
-    tar = NpmRegistry.fetch_file!(path)
+    tar = NpmRegistry.fetch_package!(name, version)
 
     case :erl_tar.extract({:binary, tar}, [:compressed, cwd: to_charlist(tmp_dir)]) do
       :ok -> :ok
