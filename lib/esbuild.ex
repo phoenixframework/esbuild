@@ -225,7 +225,7 @@ defmodule Esbuild do
     name =
       if Version.compare(version, "0.16.0") in [:eq, :gt] do
         target = target()
-        "/@esbuild/#{target}"
+        "@esbuild/#{target}"
       else
         # TODO: Remove else clause or raise if esbuild < 0.16.0 don't need to be supported anymore
         "esbuild-#{target_legacy()}"
