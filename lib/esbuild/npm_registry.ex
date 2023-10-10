@@ -19,17 +19,17 @@ defmodule Esbuild.NpmRegistry do
       "_id" => id,
       "dist" => %{
         "integrity" => integrity,
-        "signatures" => [
-          %{
-            "keyid" => @public_key_id,
-            "sig" => signature
-          }
-        ],
+        "signatures" => signatures,
         "tarball" => tarball
       }
     } =
       fetch_file!("#{@base_url}/#{name}/#{version}")
       |> Jason.decode!()
+
+    %{"sig" => signature} =
+      signatures
+      |> Enum.find(fn %{"keyid" => keyid} -> keyid == @public_key_id end) ||
+        raise "missing signature"
 
     verify_signature!("#{id}:#{integrity}", signature)
     tar = fetch_file!(tarball)
