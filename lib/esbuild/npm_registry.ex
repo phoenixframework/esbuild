@@ -2,9 +2,15 @@ defmodule Esbuild.NpmRegistry do
   @moduledoc false
   require Logger
 
+  # source: https://registry.npmjs.org/-/npm/v1/keys
+  @public_key_pem """
+  -----BEGIN PUBLIC KEY-----
+  MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE1Olb3zMAFFxXKHiIkQO5cJ3Yhl5i
+  6UPp+IhuteBJbuHcA5UogKo0EWtlWwW6KSaKoTNEYL7JlCQiVnkhBktUgg==
+  -----END PUBLIC KEY-----
+  """
+
   @base_url "https://registry.npmjs.org"
-  @external_resource "lib/esbuild/npm-registry.pem"
-  @public_key_pem File.read!("lib/esbuild/npm-registry.pem")
   @public_key_id "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA"
   @public_key_ec_curve :prime256v1
 
