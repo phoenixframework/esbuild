@@ -8,7 +8,7 @@ defmodule Esbuild.MixProject do
     [
       app: :esbuild,
       version: @version,
-      elixir: "~> 1.11",
+      elixir: "~> 1.12",
       deps: deps(),
       description: "Mix tasks for installing and invoking esbuild",
       package: [
