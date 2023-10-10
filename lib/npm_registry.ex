@@ -1,4 +1,4 @@
-defmodule NpmRegistry do
+defmodule Esbuild.NpmRegistry do
   require Logger
 
   @base_url "https://registry.npmjs.org"
