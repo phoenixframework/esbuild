@@ -81,8 +81,9 @@ defmodule Esbuild.NpmRegistry do
             match_fun: :public_key.pkix_verify_hostname_match_fun(:https)
           ]
         ]
-      ] |> maybe_add_proxy_auth(scheme),
-      [body_format: :binary]
+      ]
+      |> maybe_add_proxy_auth(scheme),
+      body_format: :binary
     )
   end
 
@@ -129,7 +130,7 @@ defmodule Esbuild.NpmRegistry do
     hash_alg
     |> hash_alg_to_erlang()
     |> :crypto.hash(binary)
-    |>:crypto.hash_equals(checksum) || raise "invalid checksum"
+    |> :crypto.hash_equals(checksum) || raise "invalid checksum"
   end
 
   defp public_key do
