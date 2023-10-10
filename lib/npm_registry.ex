@@ -23,12 +23,13 @@ defmodule NpmRegistry do
       fetch_file!("#{@base_url}/#{name}/#{version}")
       |> Jason.decode!()
 
+    verify_signature!("#{id}:#{integrity}", signature)
+    tar = fetch_file!(tarball)
+
     [hash_alg, checksum] =
       integrity
       |> String.split("-")
 
-    verify_signature!("#{id}:#{integrity}", signature)
-    tar = fetch_file!(tarball)
     verify_integrity!(tar, hash_alg, Base.decode64!(checksum))
 
     tar
