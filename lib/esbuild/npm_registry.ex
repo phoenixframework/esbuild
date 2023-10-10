@@ -3,7 +3,8 @@ defmodule Esbuild.NpmRegistry do
   require Logger
 
   @base_url "https://registry.npmjs.org"
-  @public_key_pem File.read!("npm-registry.pem")
+  @external_resource "lib/esbuild/npm-registry.pem"
+  @public_key_pem File.read!("lib/esbuild/npm-registry.pem")
   @public_key_id "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA"
   @public_key_ec_curve :prime256v1
 
