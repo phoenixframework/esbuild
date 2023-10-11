@@ -14,6 +14,20 @@ defmodule Esbuild.NpmRegistry do
   @public_key_id "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA"
 
   def fetch_package!(name, version) do
+    url = "#{@base_url}/#{name}/#{version}"
+    scheme = URI.parse(url).scheme
+    Logger.debug("Downloading esbuild from #{url}")
+
+    {:ok, _} = Application.ensure_all_started(:inets)
+    {:ok, _} = Application.ensure_all_started(:ssl)
+
+    if proxy = proxy_for_scheme(scheme) do
+      %{host: host, port: port} = URI.parse(proxy)
+      Logger.debug("Using #{String.upcase(scheme)}_PROXY: #{proxy}")
+      set_option = if "https" == scheme, do: :https_proxy, else: :proxy
+      :httpc.set_options([{set_option, {{String.to_charlist(host), port}, []}}])
+    end
+
     %{
       "_id" => id,
       "dist" => %{
@@ -22,7 +36,7 @@ defmodule Esbuild.NpmRegistry do
         "tarball" => tarball
       }
     } =
-      fetch_file!("#{@base_url}/#{name}/#{version}")
+      fetch_file!(url)
       |> Jason.decode!()
 
     %{"sig" => signature} =
@@ -43,19 +57,6 @@ defmodule Esbuild.NpmRegistry do
   end
 
   defp fetch_file!(url) do
-    scheme = URI.parse(url).scheme
-    Logger.debug("Downloading esbuild from #{url}")
-
-    {:ok, _} = Application.ensure_all_started(:inets)
-    {:ok, _} = Application.ensure_all_started(:ssl)
-
-    if proxy = proxy_for_scheme(scheme) do
-      %{host: host, port: port} = URI.parse(proxy)
-      Logger.debug("Using #{String.upcase(scheme)}_PROXY: #{proxy}")
-      set_option = if "https" == scheme, do: :https_proxy, else: :proxy
-      :httpc.set_options([{set_option, {{String.to_charlist(host), port}, []}}])
-    end
-
     case do_fetch(url) do
       {:ok, {{_, 200, _}, _headers, body}} ->
         body
