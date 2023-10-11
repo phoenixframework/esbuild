@@ -12,7 +12,6 @@ defmodule Esbuild.NpmRegistry do
 
   @base_url "https://registry.npmjs.org"
   @public_key_id "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA"
-  @public_key_ec_curve :prime256v1
 
   def fetch_package!(name, version) do
     %{
@@ -124,13 +123,12 @@ defmodule Esbuild.NpmRegistry do
   end
 
   defp verify_signature!(message, signature) do
-    :crypto.verify(
-      :ecdsa,
-      :sha256,
+    :public_key.verify(
       message,
+      :sha256,
       Base.decode64!(signature),
-      [public_key(), @public_key_ec_curve]
-    ) || raise "invalid signature"
+      public_key()
+    ) or raise "invalid signature"
   end
 
   defp verify_integrity!(binary, hash_alg, checksum) do
@@ -139,14 +137,12 @@ defmodule Esbuild.NpmRegistry do
       |> hash_alg_to_erlang()
       |> :crypto.hash(binary)
 
-    binary_checksum == checksum || raise "invalid checksum"
+    binary_checksum == checksum or raise "invalid checksum"
   end
 
   defp public_key do
     [entry] = :public_key.pem_decode(@public_key_pem)
-    {{:ECPoint, ec_point}, _} = :public_key.pem_entry_decode(entry)
-
-    ec_point
+    :public_key.pem_entry_decode(entry)
   end
 
   defp hash_alg_to_erlang("sha512"), do: :sha512
