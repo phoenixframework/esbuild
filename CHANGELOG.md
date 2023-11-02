@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.8.1 (2023-11-02)
+
+  * Fix regression when running esbuild command when none is installed
+
 ## v0.8.0 (2023-11-02)
 
   * Verifies npm package tarball authenticity and integrity with NPM's key
