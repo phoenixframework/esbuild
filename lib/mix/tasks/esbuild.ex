@@ -45,6 +45,7 @@ defmodule Mix.Tasks.Esbuild do
       Mix.Task.run("app.config")
     else
       Mix.Task.run("loadpaths")
+      Application.ensure_all_started(:esbuild)
     end
 
     Mix.Task.reenable("esbuild")

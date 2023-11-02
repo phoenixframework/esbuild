@@ -202,6 +202,8 @@ defmodule Esbuild do
   @doc """
   Installs, if not available, and then runs `esbuild`.
 
+  This task may be invoked concurrently and it will avoid concurrent installs.
+
   Returns the same as `run/2`.
   """
   def install_and_run(profile, args) do
@@ -212,6 +214,8 @@ defmodule Esbuild do
 
   @doc """
   Installs esbuild with `configured_version/0`.
+
+  If invoked concurrently, this task will perform concurrent installs.
   """
   def install do
     version = configured_version()
