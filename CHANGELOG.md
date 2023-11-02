@@ -1,16 +1,25 @@
 # CHANGELOG
 
+## v0.8.0 (2023-11-02)
+
+  * Verifies npm package tarball authenticity and integrity with NPM's key
+  * Properly set up loadpaths in Elixir v1.15
+
 ## v0.7.1 (2023-06-26)
+
   * Support Elixir v1.15+ by ensuring inets and ssl are available even on `runtime: false`
 
 ## v0.7.0 (2023-03-16)
+
   * Require Elixir v1.11+
   * Support proxy authentication
 
 ## v0.6.1 (2023-02-09)
+
   * Declare inets and ssl for latest elixir support
 
 ## v0.6.0 (2022-12-12)
+
   * Support esbuild 0.16.x
 
 ## v0.5.0 (2022-05-27)
