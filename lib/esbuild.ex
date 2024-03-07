@@ -286,6 +286,7 @@ defmodule Esbuild do
           "i686" -> "#{osname}-ia32"
           "i386" -> "#{osname}-ia32"
           "aarch64" -> "#{osname}-arm64"
+          "riscv64" -> "#{osname}-riscv64"
           # TODO: remove when we require OTP 24
           "arm" when osname == :darwin -> "darwin-arm64"
           "arm" -> "#{osname}-arm"
