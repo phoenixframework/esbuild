@@ -100,8 +100,8 @@ defmodule Esbuild do
   Returns the configured esbuild version.
   """
   def configured_version do
-    default_version =
-      if Application.get_env(:esbuild, :path), do: bin_version(), else: latest_version()
+    {:ok, default_version} =
+      if Application.get_env(:esbuild, :path), do: bin_version(), else: {:ok, latest_version()}
 
     Application.get_env(:esbuild, :version, default_version)
   end
