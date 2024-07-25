@@ -1,6 +1,6 @@
 defmodule Esbuild do
   # https://registry.npmjs.org/esbuild/latest
-  @latest_version "0.17.11"
+  @latest_version "0.23.00"
 
   @moduledoc """
   Esbuild is an installer and runner for [esbuild](https://esbuild.github.io).
@@ -65,7 +65,7 @@ defmodule Esbuild do
 
   @doc false
   def start(_, _) do
-    unless Application.get_env(:esbuild, :version) do
+    unless Application.get_env(:esbuild, :version) or Application.get_env(:esbuild, :path) do
       Logger.warning("""
       esbuild version is not configured. Please set it in your config files:
 
@@ -100,7 +100,10 @@ defmodule Esbuild do
   Returns the configured esbuild version.
   """
   def configured_version do
-    Application.get_env(:esbuild, :version, latest_version())
+    default_version =
+      if Application.get_env(:esbuild, :path), do: bin_version(), else: latest_version()
+
+    Application.get_env(:esbuild, :version, default_version)
   end
 
   @doc """
