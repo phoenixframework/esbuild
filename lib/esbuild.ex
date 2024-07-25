@@ -65,7 +65,7 @@ defmodule Esbuild do
 
   @doc false
   def start(_, _) do
-    unless Application.get_env(:esbuild, :version) or Application.get_env(:esbuild, :path) do
+    unless Application.get_env(:esbuild, :version) || Application.get_env(:esbuild, :path) do
       Logger.warning("""
       esbuild version is not configured. Please set it in your config files:
 
