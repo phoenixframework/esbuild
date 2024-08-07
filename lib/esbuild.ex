@@ -65,17 +65,15 @@ defmodule Esbuild do
 
   @doc false
   def start(_, _) do
-    skip_version_check = not Application.get_env(:esbuild, :version_check, true)
+    if Application.get_env(:esbuild, :version_check, true) do
+      unless Application.get_env(:esbuild, :version) do
+        Logger.warning("""
+        esbuild version is not configured. Please set it in your config files:
 
-    unless skip_version_check || Application.get_env(:esbuild, :version) do
-      Logger.warning("""
-      esbuild version is not configured. Please set it in your config files:
+            config :esbuild, :version, "#{latest_version()}"
+        """)
+      end
 
-          config :esbuild, :version, "#{latest_version()}"
-      """)
-    end
-
-    unless skip_version_check do
       configured_version = configured_version()
 
       case bin_version() do
