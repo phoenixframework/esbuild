@@ -1,6 +1,6 @@
 defmodule Esbuild do
   # https://registry.npmjs.org/esbuild/latest
-  @latest_version "0.17.11"
+  @latest_version "0.23.0"
 
   @moduledoc """
   Esbuild is an installer and runner for [esbuild](https://esbuild.github.io).
@@ -21,9 +21,13 @@ defmodule Esbuild do
 
   ## Esbuild configuration
 
-  There are two global configurations for the esbuild application:
+  There are four global configurations for the esbuild application:
 
     * `:version` - the expected esbuild version
+
+    * `:version_check` - whether to perform the version check or not.
+      Useful when you manage the esbuild executable with an external
+      tool (eg. npm)
 
     * `:cacerts_path` - the directory to find certificates for
       https connections
@@ -65,28 +69,30 @@ defmodule Esbuild do
 
   @doc false
   def start(_, _) do
-    unless Application.get_env(:esbuild, :version) do
-      Logger.warning("""
-      esbuild version is not configured. Please set it in your config files:
-
-          config :esbuild, :version, "#{latest_version()}"
-      """)
-    end
-
-    configured_version = configured_version()
-
-    case bin_version() do
-      {:ok, ^configured_version} ->
-        :ok
-
-      {:ok, version} ->
+    if Application.get_env(:esbuild, :version_check, true) do
+      unless Application.get_env(:esbuild, :version) do
         Logger.warning("""
-        Outdated esbuild version. Expected #{configured_version}, got #{version}. \
-        Please run `mix esbuild.install` or update the version in your config files.\
-        """)
+        esbuild version is not configured. Please set it in your config files:
 
-      :error ->
-        :ok
+            config :esbuild, :version, "#{latest_version()}"
+        """)
+      end
+
+      configured_version = configured_version()
+
+      case bin_version() do
+        {:ok, ^configured_version} ->
+          :ok
+
+        {:ok, version} ->
+          Logger.warning("""
+          Outdated esbuild version. Expected #{configured_version}, got #{version}. \
+          Please run `mix esbuild.install` or update the version in your config files.\
+          """)
+
+        :error ->
+          :ok
+      end
     end
 
     Supervisor.start_link([], strategy: :one_for_one, name: __MODULE__.Supervisor)
