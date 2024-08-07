@@ -1,6 +1,6 @@
 defmodule Esbuild do
   # https://registry.npmjs.org/esbuild/latest
-  @latest_version "0.23.00"
+  @latest_version "0.23.0"
 
   @moduledoc """
   Esbuild is an installer and runner for [esbuild](https://esbuild.github.io).
@@ -65,7 +65,9 @@ defmodule Esbuild do
 
   @doc false
   def start(_, _) do
-    unless Application.get_env(:esbuild, :version) || Application.get_env(:esbuild, :path) do
+    skip_version_check = not Application.get_env(:esbuild, :version_check, true)
+
+    unless skip_version_check || Application.get_env(:esbuild, :version) do
       Logger.warning("""
       esbuild version is not configured. Please set it in your config files:
 
@@ -73,20 +75,22 @@ defmodule Esbuild do
       """)
     end
 
-    configured_version = configured_version()
+    unless skip_version_check do
+      configured_version = configured_version()
 
-    case bin_version() do
-      {:ok, ^configured_version} ->
-        :ok
+      case bin_version() do
+        {:ok, ^configured_version} ->
+          :ok
 
-      {:ok, version} ->
-        Logger.warning("""
-        Outdated esbuild version. Expected #{configured_version}, got #{version}. \
-        Please run `mix esbuild.install` or update the version in your config files.\
-        """)
+        {:ok, version} ->
+          Logger.warning("""
+          Outdated esbuild version. Expected #{configured_version}, got #{version}. \
+          Please run `mix esbuild.install` or update the version in your config files.\
+          """)
 
-      :error ->
-        :ok
+        :error ->
+          :ok
+      end
     end
 
     Supervisor.start_link([], strategy: :one_for_one, name: __MODULE__.Supervisor)
@@ -100,14 +104,7 @@ defmodule Esbuild do
   Returns the configured esbuild version.
   """
   def configured_version do
-    default_version =
-      with false <- :esbuild |> Application.get_env(:path) |> is_nil, {:ok, version} <- bin_version() do
-        version
-      else
-        _ -> latest_version()
-      end
-
-    Application.get_env(:esbuild, :version, default_version)
+    Application.get_env(:esbuild, :version, latest_version())
   end
 
   @doc """
