@@ -21,9 +21,13 @@ defmodule Esbuild do
 
   ## Esbuild configuration
 
-  There are two global configurations for the esbuild application:
+  There are four global configurations for the esbuild application:
 
     * `:version` - the expected esbuild version
+
+    * `:version_check` - whether to perform the version check or not.
+      Useful when you manage the esbuild executable with an external
+      tool (eg. npm)
 
     * `:cacerts_path` - the directory to find certificates for
       https connections
