@@ -23,7 +23,8 @@ defmodule Esbuild do
 
   There are four global configurations for the esbuild application:
 
-    * `:version` - the expected esbuild version
+    * `:version` - the expected esbuild version. You can omit this if
+      `:version_check` is set to `false`
 
     * `:version_check` - whether to perform the version check or not.
       Useful when you manage the esbuild executable with an external
