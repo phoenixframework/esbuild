@@ -56,10 +56,16 @@ defmodule Esbuild.NpmRegistry do
     tar
   end
 
-  defp fetch_file!(url) do
-    case do_fetch(url) do
-      {:ok, {{_, 200, _}, _headers, body}} ->
+  defp fetch_file!(url, retry \\ true) do
+    case {retry, do_fetch(url)} do
+      {_, {:ok, {{_, 200, _}, _headers, body}}} ->
         body
+
+      {true, {:error, {:failed_connect, [{:to_address, _}, {inet, _, reason}]}}}
+      when inet in [:inet, :inet6] and
+             reason in [:ehostunreach, :enetunreach, :eprotonosupport, :nxdomain] ->
+        :httpc.set_options(ipfamily: fallback(inet))
+        fetch_file!(url, false)
 
       other ->
         raise """
@@ -70,6 +76,9 @@ defmodule Esbuild.NpmRegistry do
         """
     end
   end
+
+  defp fallback(:inet), do: :inet6
+  defp fallback(:inet6), do: :inet
 
   defp do_fetch(url) do
     scheme = URI.parse(url).scheme
