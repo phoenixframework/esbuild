@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.8.2 (2024-10-18)
+
+  * Fallback to ipv4/ipv6 for unreachable hosts
+
 ## v0.8.1 (2023-11-02)
 
   * Fix regression when running esbuild command when none is installed
