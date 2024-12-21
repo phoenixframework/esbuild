@@ -188,6 +188,19 @@ defmodule Esbuild do
     |> elem(1)
   end
 
+  def json_library() do
+    case Application.get_env(:esbuild, :json_library) do
+      nil ->
+        case Code.ensure_loaded(JSON) do
+          {:module, _} -> JSON
+          {:error, _} -> Jason
+        end
+
+      lib ->
+        lib
+    end
+  end
+
   defp start_unique_install_worker() do
     ref =
       __MODULE__.Supervisor
