@@ -91,7 +91,7 @@ defmodule Esbuild.NpmRegistry do
         ssl: [
           verify: :verify_peer,
           # https://erlef.github.io/security-wg/secure_coding_and_deployment_hardening/inets
-          cacertfile: cacertfile() |> String.to_charlist(),
+          cacerts: :public_key.cacerts_get(),
           depth: 2,
           customize_hostname_check: [
             match_fun: :public_key.pkix_verify_hostname_match_fun(:https)
@@ -126,10 +126,6 @@ defmodule Esbuild.NpmRegistry do
     else
       _ -> nil
     end
-  end
-
-  defp cacertfile() do
-    Application.get_env(:esbuild, :cacerts_path) || CAStore.file_path()
   end
 
   defp verify_signature!(message, signature) do
