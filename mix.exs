@@ -38,7 +38,6 @@ defmodule Esbuild.MixProject do
 
   defp deps do
     [
-      {:castore, ">= 0.0.0"},
       {:jason, "~> 1.4"},
       {:ex_doc, ">= 0.0.0", only: :docs}
     ]
