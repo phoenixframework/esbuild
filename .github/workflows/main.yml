@@ -14,11 +14,11 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: '1.11'
-              otp: 23
+              elixir: "1.14"
+              otp: 25
           - pair:
-              elixir: '1.15'
-              otp: 26
+              elixir: "1.18"
+              otp: 27
             lint: lint
     steps:
       - uses: actions/checkout@v4
