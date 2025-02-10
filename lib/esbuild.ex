@@ -1,6 +1,6 @@
 defmodule Esbuild do
   # https://registry.npmjs.org/esbuild/latest
-  @latest_version "0.23.0"
+  @latest_version "0.25.0"
 
   @moduledoc """
   Esbuild is an installer and runner for [esbuild](https://esbuild.github.io).

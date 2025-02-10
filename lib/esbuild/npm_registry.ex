@@ -3,15 +3,22 @@ defmodule Esbuild.NpmRegistry do
   require Logger
 
   # source: https://registry.npmjs.org/-/npm/v1/keys
-  @public_key_pem """
-  -----BEGIN PUBLIC KEY-----
-  MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE1Olb3zMAFFxXKHiIkQO5cJ3Yhl5i
-  6UPp+IhuteBJbuHcA5UogKo0EWtlWwW6KSaKoTNEYL7JlCQiVnkhBktUgg==
-  -----END PUBLIC KEY-----
-  """
+  @public_keys %{
+    "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA" => """
+    -----BEGIN PUBLIC KEY-----
+    MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE1Olb3zMAFFxXKHiIkQO5cJ3Yhl5i
+    6UPp+IhuteBJbuHcA5UogKo0EWtlWwW6KSaKoTNEYL7JlCQiVnkhBktUgg==
+    -----END PUBLIC KEY-----
+    """,
+    "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U" => """
+    -----BEGIN PUBLIC KEY-----
+    MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEY6Ya7W++7aUPzvMTrezH6Ycx3c+H
+    OKYCcNGybJZSCJq/fd7Qa8uuAKtdIkUQtQiEKERhAmE5lMMJhP8OkDOa2g==
+    -----END PUBLIC KEY-----
+    """
+  }
 
   @base_url "https://registry.npmjs.org"
-  @public_key_id "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA"
 
   def fetch_package!(name, version) do
     url = "#{@base_url}/#{name}/#{version}"
@@ -39,12 +46,12 @@ defmodule Esbuild.NpmRegistry do
       fetch_file!(url)
       |> Jason.decode!()
 
-    %{"sig" => signature} =
+    %{"keyid" => keyid, "sig" => signature} =
       signatures
-      |> Enum.find(fn %{"keyid" => keyid} -> keyid == @public_key_id end) ||
+      |> Enum.find(fn %{"keyid" => keyid} -> is_map_key(@public_keys, keyid) end) ||
         raise "missing signature"
 
-    verify_signature!("#{id}:#{integrity}", signature)
+    verify_signature!("#{id}:#{integrity}", keyid, signature)
     tar = fetch_file!(tarball)
 
     [hash_alg, checksum] =
@@ -128,12 +135,12 @@ defmodule Esbuild.NpmRegistry do
     end
   end
 
-  defp verify_signature!(message, signature) do
+  defp verify_signature!(message, key_id, signature) do
     :public_key.verify(
       message,
       :sha256,
       Base.decode64!(signature),
-      public_key()
+      public_key(key_id)
     ) or raise "invalid signature"
   end
 
@@ -146,8 +153,8 @@ defmodule Esbuild.NpmRegistry do
     binary_checksum == checksum or raise "invalid checksum"
   end
 
-  defp public_key do
-    [entry] = :public_key.pem_decode(@public_key_pem)
+  defp public_key(key_id) do
+    [entry] = :public_key.pem_decode(@public_keys[key_id])
     :public_key.pem_entry_decode(entry)
   end
 
