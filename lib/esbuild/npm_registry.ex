@@ -48,7 +48,7 @@ defmodule Esbuild.NpmRegistry do
 
     %{"keyid" => keyid, "sig" => signature} =
       signatures
-      |> Enum.find(fn %{"keyid" => keyid} -> keyid in Map.keys(@public_keys) end) ||
+      |> Enum.find(fn %{"keyid" => keyid} -> is_map_key(@public_keys, keyid) end) ||
         raise "missing signature"
 
     verify_signature!("#{id}:#{integrity}", keyid, signature)
