@@ -5,13 +5,13 @@ defmodule Esbuild.NpmRegistry do
   # source: https://registry.npmjs.org/-/npm/v1/keys
   @public_key_pem """
   -----BEGIN PUBLIC KEY-----
-  MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE1Olb3zMAFFxXKHiIkQO5cJ3Yhl5i
-  6UPp+IhuteBJbuHcA5UogKo0EWtlWwW6KSaKoTNEYL7JlCQiVnkhBktUgg==
+  MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEY6Ya7W++7aUPzvMTrezH6Ycx3c+H
+  OKYCcNGybJZSCJq/fd7Qa8uuAKtdIkUQtQiEKERhAmE5lMMJhP8OkDOa2g==
   -----END PUBLIC KEY-----
   """
 
   @base_url "https://registry.npmjs.org"
-  @public_key_id "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA"
+  @public_key_id "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
 
   def fetch_package!(name, version) do
     url = "#{@base_url}/#{name}/#{version}"
