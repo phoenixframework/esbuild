@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.9.0 (2025-02-10)
+
+This release requires Elixir v1.14+ and Erlang/OTP 25+.
+
+  * Update PGP keys to support latest `esbuild` versions
+  * Update `esbuild` to version 0.25.0
+  * Remove dependency on `CAStore` in favor of using Erlang certificates
+
 ## v0.8.2 (2024-10-18)
 
   * Fallback to ipv4/ipv6 for unreachable hosts
