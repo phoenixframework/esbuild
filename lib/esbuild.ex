@@ -175,7 +175,7 @@ defmodule Esbuild do
 
     opts = [
       cd: config[:cd] || File.cwd!(),
-      env: config[:env] || %{},
+      env: normalize_env(config[:env] || %{}),
       into: IO.stream(:stdio, :line),
       stderr_to_stdout: true
     ]
@@ -322,6 +322,19 @@ defmodule Esbuild do
           "armv7" <> _ -> "#{osname}-arm"
           _ -> raise "esbuild is not available for architecture: #{arch_str}"
         end
+    end
+  end
+
+  defp normalize_env(%{"NODE_PATH" => paths} = env) when is_list(paths) do
+    Map.put(env, "NODE_PATH", Enum.join(paths, path_sep()))
+  end
+
+  defp normalize_env(env), do: env
+
+  defp path_sep do
+    case :os.type() do
+      {:win32, _} -> ";"
+      {:unix, _} -> ":"
     end
   end
 end
