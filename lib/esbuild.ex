@@ -325,11 +325,12 @@ defmodule Esbuild do
     end
   end
 
-  defp normalize_env(%{"NODE_PATH" => paths} = env) when is_list(paths) do
-    Map.put(env, "NODE_PATH", Enum.join(paths, path_sep()))
+  defp normalize_env(env) do
+    Map.new(env, fn
+      {key, value} when is_list(value) -> {key, Enum.join(value, path_sep())}
+      other -> other
+    end)
   end
-
-  defp normalize_env(env), do: env
 
   defp path_sep do
     case :os.type() do
