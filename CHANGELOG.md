@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## v0.10.0 (2025-05-27)
+
+  * Automatically join environment variables specified as lists using the
+    correct `PATH` separator. For example:
+    ```elixir
+    config :esbuild,
+      my_profile: [
+        ...
+        env: %{
+          "NODE_PATH" => [Path.expand("../deps", __DIR__), Mix.Project.build_path()]
+        }
+      ]
+    ```
+
 ## v0.9.0 (2025-02-10)
 
 This release requires Elixir v1.14+ and Erlang/OTP 25+.
