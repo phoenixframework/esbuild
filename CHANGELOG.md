@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.10.1 (2026-10-19)
+
+  * Don't try to compute the target if a `:path` is configured
+
 ## v0.10.0 (2025-05-27)
 
   * Automatically join environment variables specified as lists using the
