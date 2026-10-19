@@ -131,14 +131,17 @@ defmodule Esbuild do
   The executable may not be available if it was not yet installed.
   """
   def bin_path do
+    Application.get_env(:esbuild, :path) || default_bin_path()
+  end
+
+  defp default_bin_path do
     name = "esbuild-#{target()}"
 
-    Application.get_env(:esbuild, :path) ||
-      if Code.ensure_loaded?(Mix.Project) do
-        Path.join(Path.dirname(Mix.Project.build_path()), name)
-      else
-        Path.expand("_build/#{name}")
-      end
+    if Code.ensure_loaded?(Mix.Project) do
+      Path.join(Path.dirname(Mix.Project.build_path()), name)
+    else
+      Path.expand("_build/#{name}")
+    end
   end
 
   @doc """
