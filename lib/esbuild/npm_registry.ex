@@ -110,12 +110,18 @@ defmodule Esbuild.NpmRegistry do
     )
   end
 
-  defp proxy_for_scheme("http") do
-    System.get_env("HTTP_PROXY") || System.get_env("http_proxy")
-  end
+  @doc false
+  def proxy_for_scheme("http"), do: first_non_blank_env(["HTTP_PROXY", "http_proxy"])
+  def proxy_for_scheme("https"), do: first_non_blank_env(["HTTPS_PROXY", "https_proxy"])
 
-  defp proxy_for_scheme("https") do
-    System.get_env("HTTPS_PROXY") || System.get_env("https_proxy")
+  # Blank variables are handled as if they were not set.
+  defp first_non_blank_env(names) do
+    Enum.find_value(names, fn name ->
+      case System.get_env(name) do
+        value when value in [nil, ""] -> nil
+        value -> if String.trim(value) != "", do: value
+      end
+    end)
   end
 
   defp maybe_add_proxy_auth(http_options, scheme) do

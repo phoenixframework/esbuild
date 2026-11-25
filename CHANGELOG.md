@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Unreleased
+
+  * Handle blank `HTTP_PROXY`/`HTTPS_PROXY` environment variables as if they were not set
+
 ## v0.10.1 (2026-10-19)
 
   * Don't try to compute the target if a `:path` is configured
