@@ -110,18 +110,21 @@ defmodule Esbuild.NpmRegistry do
     )
   end
 
+  # Same handling as in phoenixframework/tailwind: blank variables are treated as unset.
   @doc false
-  def proxy_for_scheme("http"), do: first_non_blank_env(["HTTP_PROXY", "http_proxy"])
-  def proxy_for_scheme("https"), do: first_non_blank_env(["HTTPS_PROXY", "https_proxy"])
+  def proxy_for_scheme("http") do
+    get_and_sanitize_env_var("HTTP_PROXY") || get_and_sanitize_env_var("http_proxy")
+  end
 
-  # Blank variables are handled as if they were not set.
-  defp first_non_blank_env(names) do
-    Enum.find_value(names, fn name ->
-      case System.get_env(name) do
-        value when value in [nil, ""] -> nil
-        value -> if String.trim(value) != "", do: value
-      end
-    end)
+  def proxy_for_scheme("https") do
+    get_and_sanitize_env_var("HTTPS_PROXY") || get_and_sanitize_env_var("https_proxy")
+  end
+
+  defp get_and_sanitize_env_var(env_var) do
+    case String.trim(System.get_env(env_var, "")) do
+      "" -> nil
+      trimmed -> trimmed
+    end
   end
 
   defp maybe_add_proxy_auth(http_options, scheme) do

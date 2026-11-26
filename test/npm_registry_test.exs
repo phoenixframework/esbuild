@@ -38,4 +38,10 @@ defmodule Esbuild.NpmRegistryTest do
 
     assert Esbuild.NpmRegistry.proxy_for_scheme("http") == "http://proxy.local:3128"
   end
+
+  test "proxy_for_scheme/1 trims surrounding whitespace" do
+    System.put_env("HTTPS_PROXY", "  http://secure.local:3128 ")
+
+    assert Esbuild.NpmRegistry.proxy_for_scheme("https") == "http://secure.local:3128"
+  end
 end
