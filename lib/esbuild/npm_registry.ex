@@ -110,12 +110,21 @@ defmodule Esbuild.NpmRegistry do
     )
   end
 
-  defp proxy_for_scheme("http") do
-    System.get_env("HTTP_PROXY") || System.get_env("http_proxy")
+  # Same handling as in phoenixframework/tailwind: blank variables are treated as unset.
+  @doc false
+  def proxy_for_scheme("http") do
+    get_and_sanitize_env_var("HTTP_PROXY") || get_and_sanitize_env_var("http_proxy")
   end
 
-  defp proxy_for_scheme("https") do
-    System.get_env("HTTPS_PROXY") || System.get_env("https_proxy")
+  def proxy_for_scheme("https") do
+    get_and_sanitize_env_var("HTTPS_PROXY") || get_and_sanitize_env_var("https_proxy")
+  end
+
+  defp get_and_sanitize_env_var(env_var) do
+    case String.trim(System.get_env(env_var, "")) do
+      "" -> nil
+      trimmed -> trimmed
+    end
   end
 
   defp maybe_add_proxy_auth(http_options, scheme) do
